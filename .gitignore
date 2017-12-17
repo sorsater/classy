@@ -1,3 +1,7 @@
+# Custom
+src/api_token.py
+
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
