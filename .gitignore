@@ -1,5 +1,6 @@
 # Custom
 src/api_token.py
+src/__pycache__/
 
 
 ## Core latex/pdflatex auxiliary files:
