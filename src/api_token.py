@@ -1,0 +1,2 @@
+# Genius API Token
+token = ''
