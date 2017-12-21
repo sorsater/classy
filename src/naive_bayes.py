@@ -75,7 +75,4 @@ class Classy(NaiveBayesClassifier):
         print('Accuracy of {} songs: {:.2f}%, ({:.2f}%)'.format(len(documents), 100*sum(result)/len(result), 100*accuracy))
 
     def save_classifier(self):
-
-
-
         pass
