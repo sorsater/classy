@@ -1,0 +1,63 @@
+{
+    "pop": [
+        "https://www.billboard.com/charts/year-end/2008/pop-songs",
+        "https://www.billboard.com/charts/year-end/2009/pop-songs",
+        "https://www.billboard.com/charts/year-end/2010/pop-songs",
+        "https://www.billboard.com/charts/year-end/2011/pop-songs",
+        "https://www.billboard.com/charts/year-end/2012/pop-songs",
+        "https://www.billboard.com/charts/year-end/2013/pop-songs",
+        "https://www.billboard.com/charts/year-end/2014/pop-songs",
+        "https://www.billboard.com/charts/year-end/2015/pop-songs",
+        "https://www.billboard.com/charts/year-end/2016/pop-songs",
+        "https://www.billboard.com/charts/year-end/2017/pop-songs"
+    ],
+    "rap": [
+        "https://www.billboard.com/charts/year-end/2013/hot-rap-songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-rap-songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-rap-songs",
+        "https://www.billboard.com/charts/year-end/2016/hot-rap-songs",
+        "https://www.billboard.com/charts/year-end/2017/hot-rap-songs",
+        "https://www.billboard.com/charts/year-end/2013/rap-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2014/rap-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2015/rap-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2016/rap-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2017/rap-streaming-songs"
+    ],
+    "rock": [
+        "https://www.billboard.com/charts/year-end/2009/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2010/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2011/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2012/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2013/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2016/hot-rock-songs",
+        "https://www.billboard.com/charts/year-end/2017/hot-rock-songs"
+    ],
+    "electronic": [
+        "https://www.billboard.com/charts/year-end/2013/hot-dance-electronic--songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-dance-electronic--songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-dance-electronic--songs",
+        "https://www.billboard.com/charts/year-end/2016/hot-dance-electronic--songs",
+        "https://www.billboard.com/charts/year-end/2017/hot-dance-electronic--songs"
+    ],
+    "country": [
+        "https://www.billboard.com/charts/year-end/2013/hot-country-songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-country-songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-country-songs",
+        "https://www.billboard.com/charts/year-end/2016/hot-country-songs",
+        "https://www.billboard.com/charts/year-end/2017/hot-country-songs"
+    ],
+    "rob": [
+        "https://www.billboard.com/charts/year-end/2013/hot-r-and-and-b-songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-r-and-and-b-songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-r-and-and-b-songs",
+        "https://www.billboard.com/charts/year-end/2016/hot-r-and-and-b-songs",
+        "https://www.billboard.com/charts/year-end/2017/hot-r-and-and-b-songs",
+        "https://www.billboard.com/charts/year-end/2013/r-and-b-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2014/r-and-b-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2015/r-and-b-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2016/r-and-b-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2017/r-and-b-streaming-songs"
+    ]
+}
