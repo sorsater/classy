@@ -1,7 +1,8 @@
 # Custom
 src/api_token.py
 src/__pycache__/
-
+src/old_stuff
+src/lyrics
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

@@ -1,3 +1,8 @@
+''''
+Takes an .json file as input. 
+In that file, each artist and title are associated with an genre.
+From that data train a classifier and evaluate the performance
+'''
 
 import random
 import nltk
@@ -6,75 +11,105 @@ import os
 import argparse
 from naive_bayes import Classy
 import json
+from collections import Counter
 
 random.seed(12345)
 
 def parse_args():
+    '''
+    Parse arguments.
+    Only required argument is .json file with artist, song, genres
+    '''
+    
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('file_name', type=str, help='Name of json file')
-    parser.add_argument('--folder_name', type=str, default='data', help='Name of folder')
+    parser.add_argument('file', type=str, help='Name of json file')
+    parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder')
+    parser.add_argument('--genres', nargs='*', default=['all'], help='Genres to be parsed')
+    parser.add_argument('--failed', action='store_true', help='Show the failed songs')
+    parser.add_argument('--thresh', type=int, default=10, help='Number of occurences for a word to be in model')
+    parser.add_argument('--features', type=int, default=-1, help='If provided, number of informative features to show')
+    parser.add_argument('--split', type=int, default=70, help='In percent, how much is training data')
 
     return parser.parse_args()
 
 def get_lyrics_from_file(args):
     '''
-    From specified 'file', open data/ and return lyrics
+    From specified "args.file", return lyrics from "args.folder_name"
     '''
 
     lyrics = []
-    with open(args.file_name) as f:
+    with open(args.file) as f:
         data = json.load(f)
 
     failed = []
-    for genre, music in data.items():
-        for artist, songs in music.items():
-            for song in songs:
-                song_path = os.path.join(args.folder_name, artist.replace('/','') + '~' + song.replace('/',''))
-                if not os.path.exists(song_path):
-                    failed.append([artist, song])
-                    continue
-                with open(song_path) as f:
-                    lyric = []
-                    for line in f:
-                        lyric += line.split()
-                    lyrics.append({'name': song, 'lyric': lyric, 'genre': genre})
+    genre_distribution = []
+    for idx, entry in data.items():
+        artist, song, genre = entry
+        song_path = os.path.join(args.folder_name, artist.replace('/','') + '~' + song.replace('/',''))
+
+        if not os.path.exists(song_path):
+            failed.append([artist, song])
+            continue
+
+        if args.genres != ['all'] and genre not in args.genres:
+            continue
     
-    return data.keys(), lyrics, failed
+        genre_distribution.append(genre)
+        with open(song_path) as f:
+            lyric = []
+            for i, line in enumerate(f):
+                lyric += line.split()
+            lyrics.append({'name': song, 'n': i, 'lyric': lyric, 'genre': genre})    
+    
+    return genre_distribution, lyrics, failed
 
 if __name__ == '__main__':
     args = parse_args()
-
+    print(args.genres)
     print('===== Preprocess =====')
-    print('Parsing file: "{}"'.format(args.file_name))
-    #songs = get_lyrics_from_genres(args.genres, args.n_songs)
-    genres, songs, failed = get_lyrics_from_file(args)
-    print("Genres: {} {}".format(len(genres), ', '.join(genres)))
-    print("Number of songs in total:", len(songs))
-    if failed:
-        print("Failed:")
-        for artist, song in failed:
-            print('\t', artist, song)
-    random.shuffle(songs)
-
+    print('Parsing file: "{}"'.format(args.file))
+    genre_distribution, songs, failed = get_lyrics_from_file(args)
     print()
-    print('===== NLTK =====')
-    # Create the classy object
-    classy = Classy(songs, genres)
-
-    # For each song, extract features
-    classy.extract_features()
-
-    # Provide percent that is train, rest is test
-    classy.split_train_test(0.7)
+    print("Number of songs in total:", len(songs))
+    for genre, cntr in Counter(genre_distribution).items():
+        print('\tGenre "{}" with {} songs'.format(genre, cntr))
     
-    # Train the model
-    classy.train()
+    genres = set(genre_distribution)
+    
+    if failed:
+        print("Failed: {}".format(len(failed)))
+        if args.failed:
+            for artist, song in failed:
+                print('\t', artist, song)
+    
+    accs = []
+    for i in range(1):
+        random.shuffle(songs)
 
-    # Test the model
-    classy.test_all()
+        print()
+        print('===== NLTK =====')
+        # Create the classy object
+        classy = Classy(songs, genres, args.thresh)
 
-    #text = ['love', 'me', 'tender', 'kiss', 'me', 'bye', 'babe']
-    #document = [classy.get_features(text), 'rock']s
-    #classy.test_documents([document], True)
+        # For each song, extract features
+        classy.extract_features()
 
+        # Provide percent that is train, rest is test
+        classy.split_train_test(percent=args.split)
+        
+        # Train the model
+        classy.train()
+
+        # Test the model
+        #classy.test_all()
+        classy.test_documents(classy.test_set)
+
+        # Show features or not
+        if args.features >= 1:
+            classy.show_features(args.features)
+        
+        accs.append(classy.accuracy)
+
+    for a in accs:
+        print(100*a)
