@@ -77,8 +77,8 @@ def find_url_for_songs():
     '''
     Use the genius API to find urls for the songs in "db_file"
     '''
-    fix_failed = 'fix' if args.fix_failed else ''
-    
+    fix_failed = 'fix_failed' if args.fix_failed else ''
+
     with open(args.db_file) as f:
         data = json.load(f)
     num_songs = len(data)
@@ -100,7 +100,7 @@ def find_url_for_songs():
 
             if 'genius.com' in url:
                 continue
-            
+
             if args.ignore_feat:
                 if 'Featuring' in artist:
                     featuring = artist.index(' Featuring')
@@ -112,13 +112,13 @@ def find_url_for_songs():
                 url, q_artist, q_song = get_url_from_name(artist, song, fix_failed)
             if url in ['fail', 'manual']:
                 failed.append([artist, song])
-                
+
             data[key] = url
     except KeyboardInterrupt:
         pass
     except:
         pass
-        
+
     # Dump data
     with open(args.db_file, 'w') as f:
         json.dump(data, f, indent=4)
@@ -141,7 +141,7 @@ if __name__ == '__main__':
         if args.get_urls:
             print('Finding urls for songs')
             find_url_for_songs()
-        
+
         if args.get_lyrics:
             print('Getting lyrics from urls')
             print('Storing songs to folder: {}'.format(args.folder_name))

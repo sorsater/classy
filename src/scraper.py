@@ -47,11 +47,11 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
                 key = str((artist, song))
                 if not key in url_data_db:
                     url_data_db[key] = ''
-                    
+
                 genre_data[str(cntr)] = [artist, song, genre]
                 cntr += 1
                 progressbar(url_cntr/num_urls, 'Number of songs: {}'.format(cntr))
-            
+
     print()
     print()
     with open(db_file_name, 'w') as f:
