@@ -70,25 +70,24 @@ def run_model(args, i, songs, genres):
     '''
     Run one iteration of the model.
     If the argument 'output' is provided, prints more pretty.
+    The inte
     '''
+    # Might need to be modified so print appers as expected
+    printed_lines = 7
+
     print('===== RUNNING MODEL, iteration {}/{} ====='.format(i+1, args.iterations))
     random.shuffle(songs)
 
-    # Create the classy object
-    classy = Classy(songs, genres, args.thresh)
+    classy = Classy(songs, genres, args)
 
-    # For each song, extract features
-    classy.extract_features()
+    classy.split_train_test()
 
-    # Provide percent that is train, rest is test
-    classy.split_train_test(percent=args.split)
-
-    # Train the model
     classy.train()
+    classy.test()
 
-    # Test the model
-    #classy.test_all()
-    classy.test_documents(classy.test_set)
+    # Distribution in the train/test set
+    # print(Counter([genre for features, genre in classy.train_set]))
+    # print(Counter([genre for features, genre in classy.test_set]))
 
     # Show features or not
     if args.features >= 1:
@@ -96,7 +95,7 @@ def run_model(args, i, songs, genres):
 
     # Clear previous print
     if args.output:
-        print('\033[F\033[K' * 6, end='')
+        print('\033[F\033[K' * printed_lines, end='')
         print('Iteration: {} Accuracy: {:.2f}%'.format(i+1, 100*classy.accuracy))
 
     return classy
@@ -123,7 +122,7 @@ if __name__ == '__main__':
         for genre, cntr in Counter(genre_distribution).items():
             print('  "{}" with {} songs'.format(genre, cntr))
 
-        print('Classifier with threshold value: {}'.format(args.thresh))
+        print('Classifier with freq value: {}'.format(args.thresh))
 
         genres = set(genre_distribution)
 
