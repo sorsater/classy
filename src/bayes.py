@@ -6,7 +6,7 @@ from w8m8 import progressbar
 
 class Classy(NaiveBayesClassifier):
     def __init__(self, corpus, genres, freq_thresh=10):
-        print('Initializing classifier with threshold value: "{}"'.format(freq_thresh))
+        print('Classifier with threshold value: "{}"'.format(freq_thresh))
         # List of lyrics with their correct tag (genre)
         self.corpus = corpus
 
@@ -23,7 +23,7 @@ class Classy(NaiveBayesClassifier):
 
         self.feature_corpus = []
         print()
-       
+
     def get_features(self, document, n):
         words_in_document = set(document)
         features = {}
@@ -50,21 +50,21 @@ class Classy(NaiveBayesClassifier):
         self.model.show_most_informative_features(n)
 
     def split_train_test(self, percent):
-        print('Splitting in train and test: {:.0f}% / {:.0f}%'.format(percent, (100-percent)))
+        print('Splitting in train and test: {:.0f}:{:.0f}'.format(percent, (100-percent)))
         len_train = int(percent/100*len(self.feature_corpus))
         self.train_set = self.feature_corpus[:len_train]
         self.test_set = self.feature_corpus[len_train:]
 
         print('Total songs: {}'.format(len(self.feature_corpus)))
         print('Train: {}, test: {}'.format(len(self.train_set), len(self.test_set)))
-        
+
     def train(self):
         print(self.genres)
         print('Training')
         self.model = nltk.NaiveBayesClassifier.train(self.train_set)
         print('Training done')
         print()
-    
+
     def test_all(self):
         print('Testing')
         self.accuracy = nltk.classify.accuracy(self.model, self.test_set)
