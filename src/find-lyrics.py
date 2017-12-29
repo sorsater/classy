@@ -135,8 +135,8 @@ if __name__ == '__main__':
 
     try:
         if args.scrape_bb:
-            scrape_billboard(args.bb_file, args.db_file, args.genre_file)
-            clean_json_file(args.genre_file)
+            scrape_billboard(args.bb_file, args.db_file, args.file)
+            clean_json_file(args.file)
 
         if args.get_urls:
             print('Finding urls for songs')
