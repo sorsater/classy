@@ -1,4 +1,8 @@
-
+'''
+The bayes classifier.
+Uses the nltk NaiveBayesClassifier.
+Takes list of songs with their genre, list of all genres and som settings arguments
+'''
 import nltk
 from nltk import NaiveBayesClassifier
 from collections import Counter
@@ -20,20 +24,60 @@ class Classy(NaiveBayesClassifier):
         self.genres = genres
 
         # The threshold for the word frequencies
-        self.freq_thresh = args.thresh
+        self.freq_thresh_uni = args.thresh
+        self.freq_thresh_bi = args.thresh
 
         # Percent to be train, rest is test
         self.percent = args.split / 100
 
-    def get_features_for_document(self, document, n):
+    def get_features_for_song(self, song):
         '''
         The features extracted are defined here.
         '''
-        words_in_document = set(document)
+        meta_data = []
+        unigrams = set()
+        bigrams = set()
+        for line in song['lyrics'].split('\n'):
+            line = line.rstrip()
+            if len(line) <= 1:
+                continue
+            if line[0] + line[-1] == '[]':
+                meta_data.append(line[1:-1].lower())
+            #line = line.replace(',', '')
+            words = line.split(' ')
+            for idx, word in enumerate(words):
+                word = word.rstrip()
+                # Ignore double space
+                if len(word) > 0:
+                    unigrams.add(word)
+                    if idx > 0:
+                        bigrams.add(words[idx - 1] + word)
         features = {}
-        # Occurency of a word or not in a song
-        for word in self.common_words:
-            features['word({})'.format(word)] = (word in words_in_document)
+        # Occurency of a unigram or not in a song
+        for word in self.common_unigrams:
+            features['uni({})'.format(word)] = (word in unigrams)
+
+        # Occurency of a bigram or not in a song
+        #for word in self.common_bigrams:
+        #    features['bi({})'.format(word)] = (word in bigrams)
+
+        # Types of metadata in lyrics. Count all of them to keep tack of how song is structured.
+        meta_members = {
+            'verse': 0, 'chorus': 0, 'intro': 0, 'outro': 0,
+            'hook': 0, 'bridge': 0, 'interlude': 0, 'break': 0, 'breakdown': 0,
+            'skit': 0,'drop': 0,
+        }
+        for item in meta_data:
+            if 'refrain' in item:
+                item = 'chorus'
+            for key in meta_members.keys():
+                if key in item:
+                    meta_members[key] += 1
+
+        for item, cnt in meta_members.items():
+            #features[item] = cnt
+            pass
+
         return features
 
     def extract_features(self, data_set, name):
@@ -42,9 +86,9 @@ class Classy(NaiveBayesClassifier):
         '''
         features = []
         for idx, song in enumerate(data_set):
-            progressbar((idx+1)/len(data_set), 'Features for: "{}" {}/{}'.format(name, idx+1, len(data_set)))
+            progressbar((idx+1)/len(data_set), 'Features "{}" {}/{}'.format(name, idx+1, len(data_set)))
             features.append([
-                self.get_features_for_document(song['lyric'], song['n']),
+                self.get_features_for_song(song),
                 song['genre'],
             ])
         print()
@@ -57,10 +101,33 @@ class Classy(NaiveBayesClassifier):
 
         # All words with their frequency in the train set.
         # Avoid to look at test data (no cheating)
-        self.unique_words = Counter([word.lower() for song in self.train_raw for word in song['lyric']])
+        unigrams = []
+        bigrams = []
+        for song in self.train_raw:
+            for line in song['lyrics'].split('\n'):
+                if len(line) <= 1:
+                    continue
+                line = line.rstrip()
+                # Exist metadata about structure of song.
+                # This data can contain name of artist (which is cheating to train on)
+                if line[0] + line[-1] == '[]':
+                    continue
+                #line = line.replace(',', '')
+                words = line.split(' ')
+                for idx, word in enumerate(words):
+                    word = word.rstrip()
+                    # Ignore double space
+                    if len(word) >= 1:
+                        unigrams.append(word)
+                        if idx > 0:
+                            bigrams.append(words[idx - 1] + word)
 
-        # Words with a higher frequency than 'freq_thresh' is stored in 'train_common_words'
-        self.common_words = set([word for word, value in self.unique_words.items() if value > self.freq_thresh])
+        self.unique_unigrams = Counter(unigrams)
+        self.unique_bigrams = Counter(bigrams)
+
+        # Words with a higher frequency than 'freq_thresh' is stored in 'common_unigrams'
+        self.common_unigrams = set([word for word, value in self.unique_unigrams.items() if value > self.freq_thresh_uni])
+        self.common_bigrams = set([word for word, value in self.unique_bigrams.items() if value > 5])#self.freq_thresh_bi])
 
         # Create train and test set
         self.train_set = self.extract_features(self.train_raw, 'train')
@@ -79,7 +146,7 @@ class Classy(NaiveBayesClassifier):
         print('Training', end='\r')
         self.model = nltk.NaiveBayesClassifier.train(self.train_set)
 
-        # TODO: might uncomment print, read description
+        # TODO: uncomment print
         # I have locally added a progressbar in the nltk training method.
         # You probably need to uncomment the print if you don't do the same
         # print('Training: done')

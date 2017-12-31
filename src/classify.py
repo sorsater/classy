@@ -24,14 +24,17 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('file', type=str, help='Name of json file')
-    parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder')
-    parser.add_argument('--genres', nargs='*', default=['all'], help='Genres to be parsed')
-    parser.add_argument('--failed', action='store_true', help='Show the failed songs')
-    parser.add_argument('--thresh', type=int, default=10, help='Number of occurences for a word to be in model')
-    parser.add_argument('--features', type=int, default=-1, help='If provided, number of informative features to show')
-    parser.add_argument('--split', type=int, default=70, help='In percent, how much is training data')
+    parser.add_argument('--genres', nargs='*', choices=['all', 'baseline', 'pop', 'rap', 'rock', 'country', 'electronic', 'rob'], default=['all'], help='Genres to be parsed')
     parser.add_argument('--iterations', type=int, default=1, help='Number of iterations to run model')
+    parser.add_argument('--thresh', type=int, default=10, help='Number of occurences for a word to be in model')
+    parser.add_argument('--split', type=int, default=70, help='In percent, how much is training data')
+
+    parser.add_argument('--features', type=str, nargs='*', default=['all'], help='Features to be used, default none.')
+
     parser.add_argument('--output', action='store_false', help='Do not use multiline print')
+    parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder to look for songs')
+    parser.add_argument('--failed', action='store_true', help='Show the failed songs')
+    parser.add_argument('--show', type=int, default=-1, help='If provided, number of informative features to show')
 
     return parser.parse_args()
 
@@ -58,11 +61,12 @@ def get_lyrics_from_file(args):
             continue
 
         genre_distribution.append(genre)
-        with open(song_path) as f:
-            lyric = []
-            for i, line in enumerate(f):
-                lyric += line.split()
-            lyrics.append({'name': song, 'n': i, 'lyric': lyric, 'genre': genre})
+
+        lyrics.append({
+            'name': artist + song,
+            'lyrics': open(song_path).read(),
+            'genre': genre,
+        })
 
     return genre_distribution, lyrics, failed
 
@@ -90,8 +94,8 @@ def run_model(args, i, songs, genres):
     # print(Counter([genre for features, genre in classy.test_set]))
 
     # Show features or not
-    if args.features >= 1:
-        classy.show_features(args.features)
+    if args.show >= 1:
+        classy.show_features(args.show)
 
     # Clear previous print
     if args.output:
@@ -116,13 +120,13 @@ if __name__ == '__main__':
 
         print()
         print("Number of songs in total:", len(songs))
-        num_train = int(args.split/100*len(songs))
-        print('Train and test: {:.0f}:{:.0f} ({}:{})'.format(args.split, 100-args.split, num_train, len(songs)-num_train))
-        print('Genres:')
         for genre, cntr in Counter(genre_distribution).items():
-            print('  "{}" with {} songs'.format(genre, cntr))
-
+            print('  {}: "{}" '.format(cntr, genre))
+        num_train = int(args.split/100*len(songs))
+        print('Train and test: {:.0f}:{:.0f} ({}:{})'.format(args.split,100-args.split, num_train, len(songs)-num_train))
+        print()
         print('Classifier with freq value: {}'.format(args.thresh))
+        print('Number of iterations: {}'.format(args.iterations))
 
         genres = set(genre_distribution)
 
