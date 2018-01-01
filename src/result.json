@@ -1,0 +1,746 @@
+{
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|1": {
+        "accuracy": [
+            "86.4198"
+        ],
+        "clock": [
+            "20:46"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "193.4"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|10": {
+        "accuracy": [
+            "91.6049"
+        ],
+        "clock": [
+            "20:49"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "26.8"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|100": {
+        "accuracy": [
+            "88.2716"
+        ],
+        "clock": [
+            "20:49"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "5.5"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "100"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "100"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|1000": {
+        "accuracy": [
+            "76.7901"
+        ],
+        "clock": [
+            "20:50"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "3.4"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1000"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|10000": {
+        "accuracy": [
+            "61.9753"
+        ],
+        "clock": [
+            "20:50"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "4.1"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10000"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|2": {
+        "accuracy": [
+            "90.9877"
+        ],
+        "clock": [
+            "20:48"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "79.3"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "2"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "2"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|20": {
+        "accuracy": [
+            "90.7407"
+        ],
+        "clock": [
+            "20:49"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "19.8"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "20"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "20"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|250": {
+        "accuracy": [
+            "85.9259"
+        ],
+        "clock": [
+            "20:50"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "4.5"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "250"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "250"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|5": {
+        "accuracy": [
+            "91.3580"
+        ],
+        "clock": [
+            "20:48"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "49.8"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|50": {
+        "accuracy": [
+            "89.6296"
+        ],
+        "clock": [
+            "20:49"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "10.4"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "50"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "50"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|500": {
+        "accuracy": [
+            "79.8765"
+        ],
+        "clock": [
+            "20:50"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "3.8"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "500"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "500"
+        ]
+    },
+    "billboard.json|--genres|pop|rap|--iterations|5|--uni_thresh|5000": {
+        "accuracy": [
+            "61.9753"
+        ],
+        "clock": [
+            "20:50"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "4.3"
+        ],
+        "features": [
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--genres",
+            "pop",
+            "rap",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5000"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|1": {
+        "accuracy": [
+            "52.9595"
+        ],
+        "clock": [
+            "19:13"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "1787.7"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|10": {
+        "accuracy": [
+            "58.9720"
+        ],
+        "clock": [
+            "18:34"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "335.4"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|100": {
+        "accuracy": [
+            "56.1994"
+        ],
+        "clock": [
+            "18:40"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "56.3"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "100"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "100"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|1000": {
+        "accuracy": [
+            "47.1651"
+        ],
+        "clock": [
+            "20:43"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "12.5"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "1000"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|10000": {
+        "accuracy": [
+            "29.4393"
+        ],
+        "clock": [
+            "20:43"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "11.5"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "10000"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|2": {
+        "accuracy": [
+            "59.5016"
+        ],
+        "clock": [
+            "18:18"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "1105.1"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "2"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "2"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|20": {
+        "accuracy": [
+            "59.2835"
+        ],
+        "clock": [
+            "18:37"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "195.3"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "20"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "20"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|250": {
+        "accuracy": [
+            "53.8318"
+        ],
+        "clock": [
+            "20:42"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "35.2"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "250"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "250"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|5": {
+        "accuracy": [
+            "60.3115"
+        ],
+        "clock": [
+            "18:28"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "623.3"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|50": {
+        "accuracy": [
+            "57.8505"
+        ],
+        "clock": [
+            "18:39"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "81.5"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "50"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "50"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|500": {
+        "accuracy": [
+            "50.8411"
+        ],
+        "clock": [
+            "20:42"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "20.5"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "500"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "500"
+        ]
+    },
+    "billboard.json|--iterations|5|--uni_thresh|5000": {
+        "accuracy": [
+            "35.4206"
+        ],
+        "clock": [
+            "20:43"
+        ],
+        "date": [
+            "2018-01-01"
+        ],
+        "elapsed": [
+            "12.7"
+        ],
+        "features": [
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5000"
+        ],
+        "file": "billboard.json",
+        "test": [
+            "billboard.json",
+            "--iterations",
+            "5",
+            "--uni_thresh",
+            "5000"
+        ]
+    }
+}

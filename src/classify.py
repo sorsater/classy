@@ -194,6 +194,10 @@ def main(args, output=False):
         print()
         print()
         print('CANCELED')
+        # Raise to caller (if exists)
+        if __name__ != '__main__':
+            raise KeyboardInterrupt
+
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         exc_name = sys.exc_info()[0].__name__
