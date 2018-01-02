@@ -12,88 +12,17 @@ from time import strftime
 from copy import deepcopy
 import time
 import argparse
+from tests import *
 
 def _parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('test', type=str, choices=['example', 'uni', 'meta', 'stopwords'], help='Name of test to run.')
+    parser.add_argument('test', type=str, choices=test_names, help='Name of test to run.')
     parser.add_argument('--result_file', type=str, default='result.json', help='Name of result json file')
     parser.add_argument('--folder_name', type=str, default='result', help='Name of folder to store result')
     parser.add_argument('--output', action='store_false', help='Suppress output from "classify.py"')
 
     return parser.parse_args()
-
-# Structure of a test set
-tests_example = [
-    # Will be the json filename when storing
-    'Small-example',
-    # Common arguments for all tests
-    ['billboard.json', '--iterations', '3', '--genres', 'pop', 'rap'],
-    # List of all tests, must atleast be one element
-    [],
-    ['--features', 'bigram'],
-]
-
-tests_uni = [
-    'Unigram-threshold-precision',
-    ['billboard.json', '--iterations', '5', '--uni_thresh'],
-    ['2'],
-    ['3'],
-    ['4'],
-    ['5'],
-    ['6'],
-    ['7'],
-    ['8'],
-    ['9'],
-    ['10'],
-    ['15'],
-]
-
-tests_meta = [
-    'Meta-feature-pop-electronic',
-    ['billboard.json', '--genres', 'pop', 'electronic', '--iterations', '5', '--uni_thresh'],
-    ['1'],
-    ['1', '--features', 'meta'],
-    ['2'],
-    ['2', '--features', 'meta'],
-    ['5'],
-    ['5', '--features', 'meta'],
-    ['10'],
-    ['10', '--features', 'meta'],
-    ['20'],
-    ['20', '--features', 'meta'],
-    ['50'],
-    ['50', '--features', 'meta'],
-    ['100'],
-    ['100', '--features', 'meta'],
-    ['250'],
-    ['250', '--features', 'meta'],
-    ['500'],
-    ['500', '--features', 'meta'],
-    ['1000'],
-    ['1000', '--features', 'meta'],
-]
-
-tests_stopwords = [
-    'Stopwords-all-genres',
-    ['billboard.json', '--iterations', '5', '--uni_thresh'],
-    ['5'],
-    ['5', '--features', 'stopwords'],
-    ['10'],
-    ['10', '--features', 'stopwords'],
-    ['20'],
-    ['20', '--features', 'stopwords'],
-    ['50'],
-    ['50', '--features', 'stopwords'],
-    ['100'],
-    ['100', '--features', 'stopwords'],
-    ['250'],
-    ['250', '--features', 'stopwords'],
-    ['500'],
-    ['500', '--features', 'stopwords'],
-    ['1000'],
-    ['1000', '--features', 'stopwords'],
-]
 
 def run_tests(result_dict, tests, t_0, args):
     test_name, test_base, tests = tests[0], tests[1], tests[2:]
@@ -206,6 +135,9 @@ def show_result(result, tests):
     print()
     print('Best iteration: {}'.format(best[1]))
     print('  Accuracy: {:.3f}%'.format(100*best[0]))
+
+    print()
+    print('Saving to file: "{}.json"'.format(tests[0].replace(' ', '-')))
 
 if __name__ == '__main__':
     try:
