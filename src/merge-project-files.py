@@ -1,5 +1,5 @@
 '''
-Takes several project files and merges them to one big.
+Takes several project files and merges them to one big
 '''
 
 import json
@@ -22,31 +22,28 @@ def parse_args():
 
 def merge_files(args):
     '''
-    Takes several project files and merges them to one big.
+    Takes several project files and merges them to one big
     '''
     for potatis in args.files:
         print(potatis)
     print()
     print(args.output_file)
 
-    input()
-    #data = json.load(open(args.file))
     print()
     print('Analyzing files: "{}"'.format(args.files))
     print()
 
     new_data = {}
-    valid_cntr = 0
+    cntr = 0
     for project in args.files:
         print('File name: "{}"'.format(project))
         data = json.load(open(project))
         print('Number of songs: {}'.format(len(data)))
         for idx, (artist, song, genre) in data.items():
-            new_data[valid_cntr] = [artist, song, genre]
-            valid_cntr += 1
+            new_data[cntr] = [artist, song, genre]
+            cntr += 1
 
     print('Number of songs: {}'.format(len(new_data)))
-    input()
     json.dump(new_data, open(args.output_file, 'w'), indent=4, sort_keys=True)
     print('Dumped in file: "{}"'.format(args.output_file))
 
