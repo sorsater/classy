@@ -94,7 +94,7 @@ def run_model(i, corpus, args):
     The inte
     '''
     # Might need to be modified so print behaves as expected
-    printed_lines = 7
+    printed_lines = 8
 
     t_run = time()
 

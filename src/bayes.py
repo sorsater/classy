@@ -4,10 +4,12 @@ Uses the nltk NaiveBayesClassifier.
 Takes list of songs with their genre, list of all genres and som settings arguments
 '''
 import nltk
-from nltk import NaiveBayesClassifier
+from nltk import NaiveBayesClassifier, word_tokenize
+from nltk.stem.snowball import SnowballStemmer
 from collections import Counter
 from w8m8 import progressbar
 import operator
+import string
 
 class Classy(NaiveBayesClassifier):
     def __init__(self, corpus, args):
@@ -40,29 +42,44 @@ class Classy(NaiveBayesClassifier):
         self.percent = args.split / 100
 
         # Extract stopwords
-        self.stopwords = nltk.corpus.stopwords.words('english') if self.feat_stopwords else set()
+        self.stopwords = nltk.corpus.stopwords.words('english') + list(string.punctuation) if self.feat_stopwords else set()
+
+        self.stemmer = SnowballStemmer('english')
 
     def features_grams(self, lyrics):
-        unigrams = set()
+        unigrams = []
         bigrams = set()
         meta_data = []
+        no_meta_lyrics = ""
         for line in lyrics.split('\n'):
             line = line.rstrip()
             if len(line) <= 1:
                 continue
             if line[0] + line[-1] == '[]':
                 meta_data.append(line[1:-1].lower())
-            #line = line.replace(',', '')
+                continue
+
+            no_meta_lyrics += line + ' '
             words = line.split(' ')
             for idx, word in enumerate(words):
                 word = word.rstrip()
                 # Ignore double space
                 if len(word) > 0:
-                    unigrams.add(word)
+                    unigrams.append(word)
                     if idx > 0:
-                        bigrams.add(words[idx - 1] + word)
+                        bigrams.add(words[idx - 1] + '|' + word)
 
-        return unigrams, bigrams, meta_data
+        if self.feat_tokenize:
+            words_tokenize = word_tokenize(no_meta_lyrics)
+        else:
+            words_tokenize = unigrams
+
+        if self.feat_stem:
+            words_stem = [self.stemmer.stem(word) for word in words_tokenize]
+        else:
+            words_stem = words_tokenize
+
+        return set(words_stem), bigrams, meta_data
 
     def features_meta(self, meta_data):
         meta_members = {
@@ -119,6 +136,7 @@ class Classy(NaiveBayesClassifier):
         return names, features
 
     def split_train_test(self):
+        print('Preprocessing data')
         len_train = int(self.percent * len(self.corpus))
         self.train_raw = self.corpus[:len_train]
         self.test_raw = self.corpus[len_train:]
@@ -127,6 +145,7 @@ class Classy(NaiveBayesClassifier):
         # Avoid to look at test data (no cheating)
         unigrams = []
         bigrams = []
+        no_meta_lyrics = ''
         for idx, song in enumerate(self.train_raw):
             for line in song['lyrics'].split('\n'):
                 if len(line) <= 1:
@@ -136,7 +155,8 @@ class Classy(NaiveBayesClassifier):
                 # This data can contain name of artist (which is cheating to train on)
                 if line[0] + line[-1] == '[]':
                     continue
-                #line = line.replace(',', '')
+                no_meta_lyrics += line + ' '
+
                 words = line.split(' ')
                 for idx, word in enumerate(words):
                     word = word.rstrip()
@@ -144,9 +164,20 @@ class Classy(NaiveBayesClassifier):
                     if len(word) >= 1:
                         unigrams.append(word)
                         if idx > 0:
-                            bigrams.append(words[idx - 1] + word)
+                            bigrams.append(words[idx - 1] + '|' + word)
 
-        unique_unigrams = Counter(unigrams)
+        if self.feat_tokenize:
+            words_tokenize = word_tokenize(no_meta_lyrics)
+        else:
+            words_tokenize = unigrams
+
+        if self.feat_stem:
+            words_stem = [self.stemmer.stem(word) for word in words_tokenize]
+        else:
+            words_stem = words_tokenize
+
+        unique_unigrams = Counter(words_stem)
+
         unique_bigrams = Counter(bigrams)
 
         # Words with a higher frequency than 'freq_thresh' is stored in 'common_unigrams'
