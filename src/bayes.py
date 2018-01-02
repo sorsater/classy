@@ -7,6 +7,7 @@ import nltk
 from nltk import NaiveBayesClassifier
 from collections import Counter
 from w8m8 import progressbar
+import operator
 
 class Classy(NaiveBayesClassifier):
     def __init__(self, corpus, args):
@@ -22,12 +23,24 @@ class Classy(NaiveBayesClassifier):
         # Features used in the model
         self.features = args.features
 
+        self.feat_baseline = 'baseline' in self.features
+        self.feat_bigram = 'bigram' in self.features
+        self.feat_meta = 'meta' in self.features
+        self.feat_stopwords = 'stopwords' in self.features
+        self.feat_tokenize = 'tokenize' in self.features
+        self.feat_stem = 'stem' in self.features
+
         # The threshold for the gram frequencies
         self.freq_thresh_uni = args.uni_thresh
         self.freq_thresh_bi = args.bi_thresh
 
+        self.word_thresh = args.max_words
+
         # Percent to be train, rest is test
         self.percent = args.split / 100
+
+        # Extract stopwords
+        self.stopwords = nltk.corpus.stopwords.words('english') if self.feat_stopwords else set()
 
     def features_grams(self, lyrics):
         unigrams = set()
@@ -78,12 +91,12 @@ class Classy(NaiveBayesClassifier):
             features['uni({})'.format(unigram)] = (unigram in unigrams)
 
         # Occurency of a bigram or not in a song
-        if 'bigram' in self.features:
+        if self.feat_bigram:
             for bigram in self.common_bigrams:
                 features['bi({})'.format(bigram)] = (bigram in bigrams)
 
         # Types of metadata in lyrics. Count all of them to keep tack of how song is structured.
-        if 'meta' in self.features:
+        if self.feat_meta:
             for item, cnt in self.features_meta(meta_data).items():
                 features[item] = cnt
 
@@ -137,8 +150,31 @@ class Classy(NaiveBayesClassifier):
         unique_bigrams = Counter(bigrams)
 
         # Words with a higher frequency than 'freq_thresh' is stored in 'common_unigrams'
-        self.common_unigrams = set([word for word, value in unique_unigrams.items() if value >= self.freq_thresh_uni])
-        self.common_bigrams = set([word for word, value in unique_bigrams.items() if value >= self.freq_thresh_bi])
+        # self.common_unigrams = set([word for word, value in unique_unigrams.items() if value >= self.freq_thresh_uni])
+        # self.common_bigrams = set([word for word, value in unique_bigrams.items() if value >= self.freq_thresh_bi])
+
+        # print(len(self.common_unigrams))
+
+        # Modified version that can consider word_thresh number of words and can remove stopwords
+        self.common_unigrams = set()
+        for word, value in sorted(unique_unigrams.items(), key=operator.itemgetter(1), reverse=True):
+            if len(self.common_unigrams) >= self.word_thresh:
+                break
+            if (self.feat_stopwords) and (word.lower() in self.stopwords):
+                continue
+            if value >= self.freq_thresh_uni:
+                self.common_unigrams.add(word)
+
+        # print(len(self.common_unigrams))
+
+        self.common_bigrams = set()
+        for word, value in unique_bigrams.items():
+            if len(self.common_bigrams) >= self.word_thresh:
+                break
+            if (self.feat_stopwords) and (word.lower() in self.stopwords):
+                continue
+            if value >= self.freq_thresh_bi:
+                self.common_bigrams.add(word)
 
         # Create train and test set
         self.train_names, self.train_set = self.extract_features(self.train_raw, 'train')

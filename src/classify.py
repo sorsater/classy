@@ -6,7 +6,6 @@ From that data train a classifier and evaluate the performance
 
 import random
 import nltk
-from nltk.corpus import names
 import os
 import argparse
 from bayes import Classy
@@ -23,6 +22,7 @@ all_features = OrderedDict([
     ('bigram', 'Bigrams in the songs'),
     ('meta', 'Song structure, use data about "Verse", "Chorus" etc'),
     ('stopwords', 'Remove stopwords'),
+    ('tokenize', 'Tokenize lyrics'),
     ('stem', 'Stem all words'),
 ])
 
@@ -41,9 +41,13 @@ def parse_args(arguments=[]):
     parser.add_argument('-i', '--iterations', type=int, default=1, help='Number of iterations to run model')
     parser.add_argument('-u', '--uni_thresh', type=int, default=10, help='Number of occurences for a unigram to be in model')
     parser.add_argument('-b', '--bi_thresh', type=int, default=10, help='Number of occurences for a bigram to be in model')
+    parser.add_argument('-m', '--max_words', type=int, default=sys.maxsize, help='Maximum number of words to be considered in model. Default is all words.')
+
     parser.add_argument('-s', '--split', type=int, default=70, help='In percent, how much is training data')
     parser.add_argument('-f', '--features', type=str, nargs='*', default=[], help='Features to be used, default none.',
         choices=list(all_features.keys()))
+
+    parser.add_argument('--count', type=int, default=-1, help='Limit the number of songs in each genre to this number. To test system on smaller dataset.')
 
     parser.add_argument('--output', action='store_false', help='Do not use multiline print')
     parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder to look for songs')
@@ -70,6 +74,9 @@ def get_lyrics_from_file(args):
             failed.append([artist, song])
             continue
 
+        if args.count != -1:
+            if genre_distribution.count(genre) >= args.count:
+                continue
         genre_distribution.append(genre)
 
         corpus.append({
@@ -186,7 +193,7 @@ def main(args, output=False):
         print('Average accuracy: {:.2f}%'.format(100*total_accuracy))
 
         _print()
-        print('Total time: {:.1f} seconds'.format(total_time))
+        print('Test time: {:.1f} seconds'.format(total_time))
 
         return total_accuracy, total_time
 
