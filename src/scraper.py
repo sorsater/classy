@@ -12,10 +12,10 @@ from w8m8 import progressbar
 
 def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db.json', genre_file_name='billboard.json'):
     '''
-    From the "billboard_file" (which contains urls)
-    Scrape all songs (artist, song) and store in "db_file_name"
-    Scrape all songs (artist, song, genre) and store in "genre_file_name"
-    Will not overwrite old entries in "db_file_name"
+    From the 'billboard_file' (which contains urls)
+    Scrape all songs (artist, song) and store in 'db_file_name'
+    Scrape all songs (artist, song, genre) and store in 'genre_file_name'
+    Will not overwrite old entries in 'db_file_name'
     '''
     print('Scraping billboard webpage')
     with open(billboard_file) as f:
@@ -36,7 +36,7 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
         for url in urls:
             url_cntr += 1
             page = requests.get(url)
-            soup = BeautifulSoup(page.text, "html.parser")
+            soup = BeautifulSoup(page.text, 'html.parser')
             print('\033[F\033[K"{}": {}'.format(genre, url))
             for row in soup.find_all('div', {'class': 'ye-chart-item__text'}):
                 song = row.find('div', {'class': 'ye-chart-item__title'}).text.strip()
@@ -63,9 +63,9 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
     print('Genre file saved to: "{}"'.format(genre_file_name))
     print()
 
-def clean_json_file(file_name):
+def clean_duplicates(file_name):
     '''
-    Removes duplicates in "file_name"
+    Removes duplicates in 'file_name'
     If duplicates within same genre, keep just one of them
     If same song in more than one genre, delete all occurences of it
     '''
@@ -118,7 +118,6 @@ def clean_json_file(file_name):
         json.dump(data, f, indent=4)
     print('Saved to: "{}"'.format(file_name))
 
-
 if __name__ == '__main__':
     scrape_billboard()
-    clean_json_file('billboard.json')
+    clean_duplicates('billboard.json')
