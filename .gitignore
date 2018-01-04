@@ -5,6 +5,7 @@ src/old_stuff
 src/lyrics
 src/result
 billboard-pages/
+.vscode/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
