@@ -1,6 +1,7 @@
 {
     "pop": [
         "https://www.billboard.com/charts/year-end/2008/pop-songs",
+        "https://web.archive.org/web/20171230230759/https://www.billboard.com/charts/year-end/2008/pop-songs",
         "https://www.billboard.com/charts/year-end/2009/pop-songs",
         "https://www.billboard.com/charts/year-end/2010/pop-songs",
         "https://www.billboard.com/charts/year-end/2011/pop-songs",
@@ -9,7 +10,34 @@
         "https://www.billboard.com/charts/year-end/2014/pop-songs",
         "https://www.billboard.com/charts/year-end/2015/pop-songs",
         "https://www.billboard.com/charts/year-end/2016/pop-songs",
-        "https://www.billboard.com/charts/year-end/2017/pop-songs"
+        "https://web.archive.org/web/20170615230248/http://www.billboard.com:80/charts/year-end/2016/pop-songs",
+        "https://www.billboard.com/charts/year-end/2017/pop-songs",
+
+        "https://www.billboard.com/charts/year-end/2006/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2007/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2008/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2009/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2010/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2011/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2012/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2013/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2014/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2015/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2016/adult-pop-songs",
+        "https://www.billboard.com/charts/year-end/2017/adult-pop-songs",
+
+        "https://www.billboard.com/charts/year-end/2006/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2007/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2008/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2009/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2010/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2011/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2012/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2013/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2014/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2015/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2016/adult-contemporary-songs",
+        "https://www.billboard.com/charts/year-end/2017/adult-contemporary-songs"
     ],
     "rap": [
         "https://www.billboard.com/charts/year-end/2013/hot-rap-songs",
@@ -17,11 +45,38 @@
         "https://www.billboard.com/charts/year-end/2015/hot-rap-songs",
         "https://www.billboard.com/charts/year-end/2016/hot-rap-songs",
         "https://www.billboard.com/charts/year-end/2017/hot-rap-songs",
+
         "https://www.billboard.com/charts/year-end/2013/rap-streaming-songs",
         "https://www.billboard.com/charts/year-end/2014/rap-streaming-songs",
         "https://www.billboard.com/charts/year-end/2015/rap-streaming-songs",
         "https://www.billboard.com/charts/year-end/2016/rap-streaming-songs",
-        "https://www.billboard.com/charts/year-end/2017/rap-streaming-songs"
+        "https://www.billboard.com/charts/year-end/2017/rap-streaming-songs",
+
+        "https://www.billboard.com/charts/year-end/2006/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2007/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2008/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2009/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2010/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2011/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2012/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2013/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2014/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2015/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2016/rap-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2017/rap-airplay-songs",
+
+        "https://www.billboard.com/charts/year-end/2010/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2011/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2012/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2013/rap-digital-songs",
+        "https://web.archive.org/web/20170412054621/http://www.billboard.com/charts/year-end/2013/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2014/rap-digital-songs",
+        "https://web.archive.org/web/20170412033631/http://www.billboard.com/charts/year-end/2014/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2015/rap-digital-songs",
+        "https://web.archive.org/web/20170509172844/https://www.billboard.com/charts/year-end/2015/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2016/rap-digital-songs",
+        "https://web.archive.org/web/20170411214907/http://www.billboard.com/charts/year-end/2016/rap-digital-songs",
+        "https://www.billboard.com/charts/year-end/2017/rap-digital-songs"
     ],
     "rock": [
         "https://www.billboard.com/charts/year-end/2009/hot-rock-songs",
@@ -38,6 +93,7 @@
         "https://www.billboard.com/charts/year-end/2013/hot-dance-electronic--songs",
         "https://www.billboard.com/charts/year-end/2014/hot-dance-electronic--songs",
         "https://www.billboard.com/charts/year-end/2015/hot-dance-electronic--songs",
+        "https://web.archive.org/web/20170626031736/https://www.billboard.com/charts/year-end/2015/hot-dance-electronic--songs",
         "https://www.billboard.com/charts/year-end/2016/hot-dance-electronic--songs",
         "https://www.billboard.com/charts/year-end/2017/hot-dance-electronic--songs"
     ],
@@ -54,10 +110,45 @@
         "https://www.billboard.com/charts/year-end/2015/hot-r-and-and-b-songs",
         "https://www.billboard.com/charts/year-end/2016/hot-r-and-and-b-songs",
         "https://www.billboard.com/charts/year-end/2017/hot-r-and-and-b-songs",
+
         "https://www.billboard.com/charts/year-end/2013/r-and-b-streaming-songs",
         "https://www.billboard.com/charts/year-end/2014/r-and-b-streaming-songs",
         "https://www.billboard.com/charts/year-end/2015/r-and-b-streaming-songs",
         "https://www.billboard.com/charts/year-end/2016/r-and-b-streaming-songs",
-        "https://www.billboard.com/charts/year-end/2017/r-and-b-streaming-songs"
+        "https://www.billboard.com/charts/year-end/2017/r-and-b-streaming-songs",
+
+        "https://www.billboard.com/charts/year-end/2002/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2003/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2004/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2005/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2006/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2007/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2008/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2009/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2010/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2011/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2012/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2013/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2014/hot-r-and-and-b-hip-hop-songs",
+        "https://www.billboard.com/charts/year-end/2015/hot-r-and-and-b-hip-hop-songs",
+
+        "https://www.billboard.com/charts/year-end/2013/r-and-b-hip-hop-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2014/r-and-b-hip-hop-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2015/r-and-b-hip-hop-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2016/r-and-b-hip-hop-streaming-songs",
+        "https://www.billboard.com/charts/year-end/2017/r-and-b-hip-hop-streaming-songs",
+
+        "https://www.billboard.com/charts/year-end/2006/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2007/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2008/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2009/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2010/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2011/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2012/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2013/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2014/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2015/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2016/r-and-b-hip-hop-airplay-songs",
+        "https://www.billboard.com/charts/year-end/2017/r-and-b-hip-hop-airplay-songs"
     ]
 }

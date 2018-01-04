@@ -3,6 +3,8 @@ src/api_token.py
 src/__pycache__/
 src/old_stuff
 src/lyrics
+src/result
+billboard-pages/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
