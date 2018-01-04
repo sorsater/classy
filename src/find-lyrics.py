@@ -34,6 +34,8 @@ def parse_args():
     parser.add_argument('--get_urls', action='store_true', help='Get url from the inputfile and store in it')
     parser.add_argument('--get_lyrics', action='store_true', help='Get lyrics from all urls')
 
+    parser.add_argument('--lev', type=int, default=0, help='Use levenstein distance when finding lyrics (ignores small spelling error)')
+
     return parser.parse_args()
 
 def get_lyrics_from_url():
@@ -69,8 +71,11 @@ def get_lyrics_from_url():
             f.write(lyrics)
 
     print()
-    for code, name in failed:
+    for i, (code, name) in enumerate(failed):
         print('Failed: {}: {}'.format(code, name))
+        if i >= 50:
+            print('Showing only 50 first, {} in total'.format(len(failed)))
+            break
     print('Number of failed: {}'.format(len(failed)))
 
 def find_url_for_songs():
@@ -102,21 +107,28 @@ def find_url_for_songs():
                 continue
 
             if args.ignore_feat:
-                if 'Featuring' in artist:
+                if ' Featuring' in artist:
                     featuring = artist.index(' Featuring')
+                    artist_no_feature = artist[:featuring]
+                elif ' With' in artist:
+                    featuring = artist.index(' With')
+                    artist_no_feature = artist[:featuring]
+                elif ' &' in artist:
+                    featuring = artist.index(' &')
                     artist_no_feature = artist[:featuring]
                 else:
                     artist_no_feature = artist
-                url, q_artist, q_song = get_url_from_name(artist_no_feature, song, fix_failed)
+                url, q_artist, q_song = get_url_from_name(artist_no_feature, song, fix_failed, args.lev)
             else:
-                url, q_artist, q_song = get_url_from_name(artist, song, fix_failed)
+                url, q_artist, q_song = get_url_from_name(artist, song, fix_failed, args.lev)
             if url in ['fail', 'manual']:
                 failed.append([artist, song])
 
             data[key] = url
     except KeyboardInterrupt:
         pass
-    except:
+    except Exception as e:
+        print(e)
         pass
 
     # Dump data
@@ -124,8 +136,12 @@ def find_url_for_songs():
         json.dump(data, f, indent=4)
 
     print()
-    for fail in failed:
+    for i, fail in enumerate(failed):
         print('Url not found:', fail)
+        if i >= 50:
+            print('Showing only 50 first, {} in total'.format(len(failed)))
+            break
+    print()
 
 if __name__ == '__main__':
     args = parse_args()
@@ -151,5 +167,8 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print()
         print('Canceled')
+    except Exception as e:
+        print('Exception!')
+        print(e)
 
     print('Done')

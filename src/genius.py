@@ -5,6 +5,7 @@ Get data from genius by using genius API as well as normal scraping, genius have
 import requests
 from bs4 import BeautifulSoup
 from api_token import token
+from pylev3 import Levenshtein
 
 base_url = "http://api.genius.com"
 search_url = base_url + "/search"
@@ -26,14 +27,49 @@ def get_lyrics_url(url):
     lyrics = html.find("div", class_="lyrics").get_text() #updated css where the lyrics are based in HTML
     return lyrics
 
-def get_url_from_name(artist, song, verbose=''):
+def levenshtein_distance(first, second):
+    '''
+    Find the Levenshtein distance between two strings.
+    Taken from:
+    https://www.stavros.io/posts/finding-the-levenshtein-distance-in-python/
+    '''
+    if len(first) > len(second):
+        first, second = second, first
+    if len(second) == 0:
+        return len(first)
+    first_length = len(first) + 1
+    second_length = len(second) + 1
+    distance_matrix = [[0] * second_length for x in range(first_length)]
+    for i in range(first_length):
+        distance_matrix[i][0] = i
+        for j in range(second_length):
+            distance_matrix[0][j]=j
+    for i in range(1, first_length):
+        for j in range(1, second_length):
+            deletion = distance_matrix[i-1][j] + 1
+            insertion = distance_matrix[i][j-1] + 1
+            substitution = distance_matrix[i-1][j-1]
+            if first[i-1] != second[j-1]:
+                substitution += 1
+            distance_matrix[i][j] = min(insertion, deletion, substitution)
+    return distance_matrix[first_length-1][second_length-1]
+
+def get_url_from_name(artist, song, verbose='', lev=0):
     '''
     From artist and song, use genius api to search for song.
     If verbose is set to 'fix_failed', method is called again and queries the user about alternatives.
     '''
 
     query = {'q': artist + ' ' + song}
-    response = requests.get(search_url, params=query, headers=headers)
+
+    try:
+        response = requests.get(search_url, params=query, headers=headers)
+    except KeyboardInterrupt:
+        pass
+    except:
+        print('Failed with response')
+        print(search_url)
+        input('Enter to continue')
 
     alternatives = []
     # Returns a number of hits, try to find correct one
@@ -48,6 +84,17 @@ def get_url_from_name(artist, song, verbose=''):
         if q_artist.lower() == artist.lower():
             if q_song.lower() == song.lower():
                 return url, q_artist, q_song
+
+        # Levenschtein calculations. If distance <= 'lev' it is accepted
+        lev_artist = levenshtein_distance(q_artist.lower(), artist.lower())
+        lev_song = levenshtein_distance(q_song.lower(), song.lower())
+
+        if (lev_artist + lev_song) <= lev:
+            print(artist, '|', song)
+            print(q_artist, '|', q_song)
+            print('Total levenstein distance: {} / {}. Considered valid'.format(lev_artist + lev_song, lev))
+            print()
+            return url, q_artist, q_song
 
         alternatives.append([url, q_artist, q_song])
 
@@ -81,6 +128,6 @@ def get_url_from_name(artist, song, verbose=''):
 
     # No match, if verbose is "fix_failed", call method again and query user with alternatives
     elif verbose == 'fix_failed':
-        return get_url_from_name(artist, song, 'ask_user')
+        return get_url_from_name(artist, song, 'ask_user', lev)
     else:
         return 'fail', '', ''
