@@ -46,6 +46,8 @@ class Classy(NaiveBayesClassifier):
 
         self.stemmer = SnowballStemmer('english')
 
+        self.tuning = args.tuning
+
     def features_grams(self, lyrics):
         unigrams = []
         bigrams = set()
@@ -84,9 +86,10 @@ class Classy(NaiveBayesClassifier):
     def features_meta(self, meta_data):
         meta_members = {
             'verse': 0, 'chorus': 0, 'intro': 0, 'outro': 0,
-            'hook': 0, 'bridge': 0, 'interlude': 0, 'break': 0, 'breakdown': 0,
-            'skit': 0,'drop': 0,
-        }
+            'break':0, 'bridge': 0, 'skit': 0, 'hook': 0,
+            'drop': 0, 'interlude': 0, 'breakdown': 0,
+            }
+
         for item in meta_data:
             if 'refrain' in item:
                 item = 'chorus'
@@ -117,6 +120,33 @@ class Classy(NaiveBayesClassifier):
             for item, cnt in self.features_meta(meta_data).items():
                 features[item] = cnt
 
+        '''
+        Not working yet
+        tokenized_lyrics = nltk.wordpunct_tokenize(song['lyrics'])
+
+        num_chars = len(lyrics)
+        num_words = len(tokenized_lyrics)
+        num_unique = len((tokenized_lyrics))
+        num_unique = len(song['lyrics'])
+
+        if False:
+            if num_unique <= 1000:
+                features['LENGTH200'] = True
+            else:
+                features['LENGTH200'] = False
+
+            if num_unique >= 2000:
+                features['LENGTH1k00'] = True
+            else:
+                features['LENGTH1k00'] = False
+
+            if num_unique <= 100:
+                features['LENGTH100'] = True
+            else:
+                features['LENGTH100'] = False
+
+            print(features['LENGTH200'])
+        '''
         return features
 
     def extract_features(self, data_set, name):

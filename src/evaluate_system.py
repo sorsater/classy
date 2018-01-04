@@ -12,12 +12,13 @@ from time import strftime
 from copy import deepcopy
 import time
 import argparse
-from tests import *
+import tests
+import datetime
 
 def _parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('test', type=str, choices=test_names, help='Name of test to run.')
+    parser.add_argument('test', type=str, nargs='*', choices=list(tests.tests.keys()), help='Name of test to run.')
     parser.add_argument('--result_file', type=str, default='result.json', help='Name of result json file')
     parser.add_argument('--folder_name', type=str, default='result', help='Name of folder to store result')
     parser.add_argument('--output', action='store_false', help='Suppress output from "classify.py"')
@@ -139,30 +140,50 @@ def show_result(result, tests):
     print()
     print('Saving to file: "{}.json"'.format(tests[0].replace(' ', '-')))
 
+    return best
+
 if __name__ == '__main__':
     try:
         t_0 = time.time()
         args = _parse_args()
 
+        all_results = {}
+
         if not os.path.exists(args.folder_name):
             os.makedirs(args.folder_name)
 
         args.result_path = os.path.join(args.folder_name, args.result_file)
-
-        tests = deepcopy(eval('tests_{}'.format(args.test)))
-
-        result_dict = json.load(open(args.result_path)) if os.path.exists(args.result_path) else {}
-        result, diff = run_tests(result_dict, tests, t_0, args)
-        show_result(result, tests)
-
-        if diff:
+        print('Total number of big tests: {}'.format(len(args.test)))
+        for idx, test_name in enumerate(args.test):
+            big_text_to_show = 'BIG TEST: {} / {}'.format(idx+1, len(args.test))
             print()
-            print('These test are inconsistent')
-            for name, accs in diff:
-                print()
-                print('Name: {}'.format(name))
-                print(accs)
+            print('============={}============='.format('=' * len(big_text_to_show)))
+            print('=========    {}    ========='.format(big_text_to_show))
+            print('============={}============='.format('=' * len(big_text_to_show)))
+            print(test_name)
+
+            test_list = deepcopy(eval('{}'.format(tests.tests[test_name])))
+
+            result_dict = json.load(open(args.result_path)) if os.path.exists(args.result_path) else {}
+            result, diff = run_tests(result_dict, test_list, t_0, args)
+            best_iter = show_result(result, test_list)
+
+            all_results[test_name] = [test_list[0], best_iter]
+
         print()
         print('Total time: {:.1f} seconds'.format(time.time()-t_0))
+
+        print('============================================')
+        for test_name, (file_name, best_iter) in all_results.items():
+            print('============================================')
+            print('Name: ', test_name)
+            print('Saved to: "{}.json"'.format(file_name.replace(' ', '-')))
+            print('Best iteration: {}'.format(best_iter[1]))
+            print('  Accuracy: {:.3f}%'.format(100*best_iter[0]))
+
+        print('============================================')
+
+        print('Total time: {} seconds'.format(datetime.timedelta(seconds=int(time.time()-t_0))))
+
     except KeyboardInterrupt:
         print('KEYBOARD INTERRUPT')

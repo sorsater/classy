@@ -53,6 +53,8 @@ def parse_args(arguments=[]):
     parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder to look for songs')
     parser.add_argument('--show', type=int, default=-1, help='If provided, number of informative features to show')
 
+    parser.add_argument('--tuning', type=int, help='Used when optimizing features')
+
     return parser.parse_args(arguments) if arguments else parser.parse_args()
 
 def get_lyrics_from_file(args):
@@ -112,14 +114,14 @@ def run_model(i, corpus, args):
     # print(Counter([genre for features, genre in classy.train_set]))
     # print(Counter([genre for features, genre in classy.test_set]))
 
-    # Show features or not
-    if args.show >= 1:
-        classy.show_features(args.show)
-
     # Clear previous print
     if args.output:
         print('\033[F\033[K' * printed_lines, end='')
         print(' {}: Accuracy: {:.2f}%, Time: {:.1f} seconds'.format(str(i+1).rjust(2), 100*classy.accuracy, time() - t_run))
+
+    # Show features or not
+    if args.show >= 1:
+        classy.show_features(args.show)
 
     return classy.accuracy
 
@@ -136,7 +138,7 @@ def main(args, output=False):
 
     try:
         # Reset the seed after each test
-        random.seed(12345)
+        random.seed(1234)
 
         t_start = time()
         _print()
