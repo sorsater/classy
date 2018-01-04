@@ -36,16 +36,16 @@ def merge_files(args):
     new_data = {}
     cntr = 0
     for project in args.files:
-        print('File name: "{}"'.format(project))
         data = json.load(open(project))
-        print('Number of songs: {}'.format(len(data)))
+        print('Number of songs for "{}": {}'.format(project, len(data)))
         for idx, (artist, song, genre) in data.items():
             new_data[cntr] = [artist, song, genre]
             cntr += 1
-
+    print()
     print('Number of songs: {}'.format(len(new_data)))
     json.dump(new_data, open(args.output_file, 'w'), indent=4, sort_keys=True)
     print('Dumped in file: "{}"'.format(args.output_file))
+    print()
 
     clean_duplicates(args.output_file)
 
