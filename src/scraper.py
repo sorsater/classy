@@ -9,6 +9,7 @@ import json
 from bs4 import BeautifulSoup
 import requests
 from w8m8 import progressbar
+from collections import Counter
 
 def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db.json', genre_file_name='billboard.json'):
     '''
@@ -32,15 +33,36 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
     num_urls = sum([len(urls) for genre, urls in billboard_links.items()])
     genre_data = {}
     cntr, url_cntr = 0, 0
+    failed_links = []
+    working_archive = set()
+    chart_items = {
+        False: [['ye-chart-item__text', 'div'], ['ye-chart-item__title', 'div'], ['ye-chart-item__artist', 'div']],
+        True: [['ye-chart__item-text', 'div'], ['ye-chart__item-title', 'h1'], ['ye-chart__item-subtitle', 'h2']],
+    }
+    genre_distribution = []
     for genre, urls in billboard_links.items():
         for url in urls:
             url_cntr += 1
+
             page = requests.get(url)
             soup = BeautifulSoup(page.text, 'html.parser')
+
+            with open('billboard-pages/' + url.replace('/', '|') + '.html', 'w') as f:
+                f.write(page.text)
             print('\033[F\033[K"{}": {}'.format(genre, url))
-            for row in soup.find_all('div', {'class': 'ye-chart-item__text'}):
-                song = row.find('div', {'class': 'ye-chart-item__title'}).text.strip()
-                artist = row.find('div', {'class': 'ye-chart-item__artist'}).text.strip()
+
+            class_base = chart_items[True]
+            items = soup.find_all('', {'class': class_base[0][0]})
+            if not items:
+                class_base = chart_items[False]
+                items = soup.find_all('', {'class': class_base[0][0]})
+            if not items:
+                failed_links.append([genre, url])
+            for row in items:
+                if 'archive' in url:
+                    working_archive.add(url)
+                song = row.find('', {'class': class_base[1][0]}).text.strip()
+                artist = row.find('', {'class': class_base[2][0]}).text.strip()
 
                 artist = artist.replace(u'\u200b', '')
                 song = song.replace(u'\u200b', '')
@@ -49,8 +71,17 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
                     url_data_db[key] = ''
 
                 genre_data[str(cntr)] = [artist, song, genre]
+                genre_distribution.append(genre)
                 cntr += 1
-                progressbar(url_cntr/num_urls, 'Number of songs: {}'.format(cntr))
+            progressbar(url_cntr/num_urls, 'Number of songs: {} Failed: {}'.format(cntr, len(failed_links)))
+    print()
+    print()
+    for genre, link in failed_links:
+        print('Failed: Genre: "{}", url: {}'.format(genre, link))
+    print()
+    for archive in working_archive:
+        print('Archive: {}'.format(archive))
+    print('Manually added "adult pop songs 2012"')
 
     print()
     print()
@@ -61,6 +92,10 @@ def scrape_billboard(billboard_file='billboard-links.json', db_file_name='url-db
     with open(genre_file_name, 'w') as f:
         json.dump(genre_data, f, indent=4)
     print('Genre file saved to: "{}"'.format(genre_file_name))
+    print()
+    print()
+    for genre, cnt in Counter(genre_distribution).items():
+        print('  Genre: {} {}'.format(genre, cnt))
     print()
 
 def clean_duplicates(file_name):
@@ -80,16 +115,15 @@ def clean_duplicates(file_name):
     new_data = {}
     cntr = 0
     for idx, entry in data.items():
-        entry = tuple(entry)
-        if not entry in seen:
-            new_data[str(cntr)] = entry
+        entry_low = tuple([e.lower() for e in entry])
+        if not entry_low in seen:
+            new_data[str(cntr)] = tuple(entry)
             cntr += 1
-        seen.add(entry)
+        seen.add(entry_low)
 
     data = new_data
     print('Number of songs: {}'.format(len(data)))
     print()
-
     print('Removing duplicates with different genres')
     seen = {}
     duplicates = set()
@@ -111,6 +145,10 @@ def clean_duplicates(file_name):
 
     data = new_data
 
+    for genre, cnt in Counter([genre for idx, (artist, song, genre) in data.items()]).items():
+        print('  Genre: {} {}'.format(genre, cnt))
+    print()
+
     print('Number of songs: {}'.format(len(data)))
     print()
 
@@ -120,4 +158,4 @@ def clean_duplicates(file_name):
 
 if __name__ == '__main__':
     scrape_billboard()
-    clean_duplicates('billboard.json')
+    clean_duplicates(genre_file_name)
