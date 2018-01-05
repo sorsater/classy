@@ -5,8 +5,9 @@ Takes list of songs with their genre, list of all genres and som settings argume
 '''
 import nltk
 from nltk import NaiveBayesClassifier, word_tokenize
+from nltk.metrics.scores import precision, recall
 from nltk.stem.snowball import SnowballStemmer
-from collections import Counter
+from collections import Counter, defaultdict
 from w8m8 import progressbar
 import operator
 import string
@@ -36,7 +37,7 @@ class Classy(NaiveBayesClassifier):
         self.freq_thresh_uni = args.uni_thresh
         self.freq_thresh_bi = args.bi_thresh
 
-        self.word_thresh = args.max_words
+        self.num_features_thresh = args.max_feats
 
         # Percent to be train, rest is test
         self.percent = args.split / 100
@@ -46,7 +47,9 @@ class Classy(NaiveBayesClassifier):
 
         self.stemmer = SnowballStemmer('english')
 
-        self.tuning = args.tuning
+        self.num_chars = int(args.num_chars)
+        self.num_words = int(args.num_words)
+        self.num_unique = int(args.num_unique)
 
     def features_grams(self, lyrics):
         unigrams = []
@@ -120,33 +123,23 @@ class Classy(NaiveBayesClassifier):
             for item, cnt in self.features_meta(meta_data).items():
                 features[item] = cnt
 
-        '''
-        Not working yet
+        # Considers number of characters, number of words and number of unique words
+        # If the values are provided that number is the threshold value
         tokenized_lyrics = nltk.wordpunct_tokenize(song['lyrics'])
 
-        num_chars = len(lyrics)
-        num_words = len(tokenized_lyrics)
-        num_unique = len((tokenized_lyrics))
-        num_unique = len(song['lyrics'])
+        _chars = len(song['lyrics'])
+        _words = len(tokenized_lyrics)
+        _unique = len(set(tokenized_lyrics))
 
-        if False:
-            if num_unique <= 1000:
-                features['LENGTH200'] = True
-            else:
-                features['LENGTH200'] = False
+        if self.num_chars > 0:
+            features['chars({})'.format(self.num_chars)] = (_chars <= self.num_chars)
 
-            if num_unique >= 2000:
-                features['LENGTH1k00'] = True
-            else:
-                features['LENGTH1k00'] = False
+        if self.num_words > 0:
+            features['words({})'.format(self.num_words)] = (_words <= self.num_words)
 
-            if num_unique <= 100:
-                features['LENGTH100'] = True
-            else:
-                features['LENGTH100'] = False
+        if self.num_unique > 0:
+            features['unique({})'.format(self.num_unique)] = (_unique <= self.num_unique)
 
-            print(features['LENGTH200'])
-        '''
         return features
 
     def extract_features(self, data_set, name):
@@ -216,21 +209,20 @@ class Classy(NaiveBayesClassifier):
 
         # print(len(self.common_unigrams))
 
-        # Modified version that can consider word_thresh number of words and can remove stopwords
+        # Modified version that can consider num_features_thresh number of words and can remove stopwords
         self.common_unigrams = set()
         for word, value in sorted(unique_unigrams.items(), key=operator.itemgetter(1), reverse=True):
-            if len(self.common_unigrams) >= self.word_thresh:
+            if len(self.common_unigrams) >= self.num_features_thresh:
                 break
             if (self.feat_stopwords) and (word.lower() in self.stopwords):
                 continue
             if value >= self.freq_thresh_uni:
                 self.common_unigrams.add(word)
-
         # print(len(self.common_unigrams))
 
         self.common_bigrams = set()
         for word, value in unique_bigrams.items():
-            if len(self.common_bigrams) >= self.word_thresh:
+            if len(self.common_bigrams) >= self.num_features_thresh:
                 break
             if (self.feat_stopwords) and (word.lower() in self.stopwords):
                 continue
@@ -278,8 +270,8 @@ class Classy(NaiveBayesClassifier):
         result = []
         for idx, (lyrics_features, true_genre) in enumerate(self.test_set):
             progressbar((idx+1)/len(self.test_set), 'Testing {}/{}'.format(idx+1, len(self.test_set)))
-
-            result.append(true_genre == self.model.classify(lyrics_features))
+            pred_genre = self.model.classify(lyrics_features)
+            result.append(true_genre == pred_genre)
 
             # Name of current test song
             #self.test_names[idx]

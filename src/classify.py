@@ -41,7 +41,7 @@ def parse_args(arguments=[]):
     parser.add_argument('-i', '--iterations', type=int, default=1, help='Number of iterations to run model')
     parser.add_argument('-u', '--uni_thresh', type=int, default=10, help='Number of occurences for a unigram to be in model')
     parser.add_argument('-b', '--bi_thresh', type=int, default=10, help='Number of occurences for a bigram to be in model')
-    parser.add_argument('-m', '--max_words', type=int, default=sys.maxsize, help='Maximum number of words to be considered in model. Default is all words.')
+    parser.add_argument('-m', '--max_feats', type=int, default=3000, help='Maximum number of unigram features to be considered in model. Default is all.')
 
     parser.add_argument('-s', '--split', type=int, default=70, help='In percent, how much is training data')
     parser.add_argument('-f', '--features', type=str, nargs='*', default=[], help='Features to be used, default none.',
@@ -53,7 +53,12 @@ def parse_args(arguments=[]):
     parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder to look for songs')
     parser.add_argument('--show', type=int, default=-1, help='If provided, number of informative features to show')
 
-    parser.add_argument('--tuning', type=int, help='Used when optimizing features')
+#    parser.add_argument('--tuning', type=int, default=-1, help='Used when optimizing features')
+
+    # Tune number of chars/words/unique words
+    parser.add_argument('--num_chars', type=int, default=-1, help='Number of chars in lyrics')
+    parser.add_argument('--num_words', type=int, default=-1, help='Number of words in lyrics')
+    parser.add_argument('--num_unique', type=int, default=-1, help='Number of uique words in lyrics')
 
     return parser.parse_args(arguments) if arguments else parser.parse_args()
 
