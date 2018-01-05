@@ -5,7 +5,7 @@ Takes list of songs with their genre, list of all genres and som settings argume
 '''
 import nltk
 from nltk import NaiveBayesClassifier, word_tokenize
-from nltk.metrics.scores import precision, recall
+from nltk.metrics.scores import precision, recall, f_measure
 from nltk.stem.snowball import SnowballStemmer
 from collections import Counter, defaultdict
 from w8m8 import progressbar
@@ -50,6 +50,15 @@ class Classy(NaiveBayesClassifier):
         self.num_chars = int(args.num_chars)
         self.num_words = int(args.num_words)
         self.num_unique = int(args.num_unique)
+
+        self.num_prints = 0
+
+    def _print(self, msg='', end='\n'):
+        '''
+        Used to keep track of number of prints
+        '''
+        print(msg, end=end)
+        self.num_prints += 1
 
     def features_grams(self, lyrics):
         unigrams = []
@@ -155,11 +164,12 @@ class Classy(NaiveBayesClassifier):
                 song['genre'],
             ])
             names.append(song['name'])
-        print()
+        self._print()
         return names, features
 
     def split_train_test(self):
-        print('Preprocessing data')
+        self._print('Preprocessing data')
+        self._print('Number of unigram features: {}'.format(self.num_features_thresh))
         len_train = int(self.percent * len(self.corpus))
         self.train_raw = self.corpus[:len_train]
         self.test_raw = self.corpus[len_train:]
@@ -207,7 +217,7 @@ class Classy(NaiveBayesClassifier):
         # self.common_unigrams = set([word for word, value in unique_unigrams.items() if value >= self.freq_thresh_uni])
         # self.common_bigrams = set([word for word, value in unique_bigrams.items() if value >= self.freq_thresh_bi])
 
-        # print(len(self.common_unigrams))
+        # self._print(len(self.common_unigrams))
 
         # Modified version that can consider num_features_thresh number of words and can remove stopwords
         self.common_unigrams = set()
@@ -218,7 +228,7 @@ class Classy(NaiveBayesClassifier):
                 continue
             if value >= self.freq_thresh_uni:
                 self.common_unigrams.add(word)
-        # print(len(self.common_unigrams))
+        # self._print(len(self.common_unigrams))
 
         self.common_bigrams = set()
         for word, value in unique_bigrams.items():
@@ -243,13 +253,13 @@ class Classy(NaiveBayesClassifier):
         '''
         Train the model by using the built in trainer.
         '''
-        print('Training', end='\r')
+        self._print('Training', end='\r')
         self.model = nltk.NaiveBayesClassifier.train(self.train_set)
 
-        # TODO: uncomment print
+        # TODO: uncomment self._print
         # I have locally added a progressbar in the nltk training method.
-        # You probably need to uncomment the print if you don't do the same
-        # print('Training: done')
+        # You probably need to uncomment the self._print if you don't do the same
+        # self._print('Training: done')
 
     def test_old(self):
         '''
@@ -257,27 +267,50 @@ class Classy(NaiveBayesClassifier):
         Replaced by 'test' below.
         '''
         self.accuracy = nltk.classify.accuracy(self.model, self.test_set)
-        print('Testing')
-        print('Accuracy: {:.2f}%'.format(100*self.accuracy))
-        print()
+        self._print('Testing')
+        self._print('Accuracy: {:.2f}%'.format(100*self.accuracy))
+        self._print()
 
     def test(self):
         '''
         Evaluate all documents and calculate accuracy for them.
         Is used instead of built in because possible to show progress.
+
+        Calculates the precision, recall and f_measure.
+        Is shown if the argument 'output' is passed to 'classify.py'
+        Isn't saved in the result file.
         '''
         # List with 'True'/'False' if correctly guessed or not
         result = []
+        true_set = defaultdict(set)
+        pred_set = defaultdict(set)
         for idx, (lyrics_features, true_genre) in enumerate(self.test_set):
             progressbar((idx+1)/len(self.test_set), 'Testing {}/{}'.format(idx+1, len(self.test_set)))
             pred_genre = self.model.classify(lyrics_features)
+
+            true_set[true_genre].add(idx)
+            pred_set[pred_genre].add(idx)
             result.append(true_genre == pred_genre)
 
             # Name of current test song
             #self.test_names[idx]
 
-        print()
+        self._print()
         self.accuracy = sum(result) / len(result)
 
-        print('Accuracy: {:.2f}%'.format(100*self.accuracy))
-        print()
+        self.stats = []
+
+        self._print('Accuracy: {:.2f}%'.format(100*self.accuracy))
+        self._print()
+
+        for genre in list(true_set.keys()):
+            _precision = precision(true_set[genre], pred_set[genre])
+            _recall = recall(true_set[genre], pred_set[genre])
+            _f_measure = f_measure(true_set[genre], pred_set[genre])
+            self.stats.append([genre, _precision, _recall, _f_measure])
+
+            self._print('Genre: {}'.format(genre))
+            self._print('Precision: {:.2f}%'.format(100*_precision))
+            self._print('Recall: {:.2f}%'.format(100*_recall))
+            self._print('F-measure: {:.2f}%'.format(100*_f_measure))
+            self._print()

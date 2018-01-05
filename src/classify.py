@@ -100,9 +100,6 @@ def run_model(i, corpus, args):
     If the argument 'output' is provided, prints more pretty.
     The inte
     '''
-    # Might need to be modified so print behaves as expected
-    printed_lines = 8
-
     t_run = time()
 
     print('===== RUNNING MODEL, iteration {}/{} ====='.format(i+1, args.iterations))
@@ -115,20 +112,22 @@ def run_model(i, corpus, args):
     classy.train()
     classy.test()
 
+    num_prints = classy.num_prints
+
     # Distribution of genres in the train/test set
     # print(Counter([genre for features, genre in classy.train_set]))
     # print(Counter([genre for features, genre in classy.test_set]))
 
     # Clear previous print
     if args.output:
-        print('\033[F\033[K' * printed_lines, end='')
+        print('\033[F\033[K' * (num_prints + 1), end='')
         print(' {}: Accuracy: {:.2f}%, Time: {:.1f} seconds'.format(str(i+1).rjust(2), 100*classy.accuracy, time() - t_run))
 
     # Show features or not
     if args.show >= 1:
         classy.show_features(args.show)
 
-    return classy.accuracy
+    return classy.accuracy, classy.stats
 
 def _print(msg=''):
     '''
@@ -190,7 +189,12 @@ def main(args, output=False):
 
         # Run model 'args.iterations' times
         print()
-        accs = [run_model(i, corpus, args) for i in range(args.iterations)]
+        accs = []
+        stats = []
+        for i in range(args.iterations):
+            acc, stat = run_model(i, corpus, args)
+            accs.append(acc)
+            stats.append(stat)
 
         total_accuracy = sum(accs) / len(accs)
         total_time = time() - t_start
@@ -202,7 +206,7 @@ def main(args, output=False):
         _print()
         print('Test time: {:.1f} seconds'.format(total_time))
 
-        return total_accuracy, total_time
+        return total_accuracy, stats, total_time
 
     except KeyboardInterrupt:
         print()
@@ -211,7 +215,7 @@ def main(args, output=False):
         # Raise to caller (if exists)
         if __name__ != '__main__':
             raise KeyboardInterrupt
-
+    '''
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         exc_name = sys.exc_info()[0].__name__
@@ -220,6 +224,6 @@ def main(args, output=False):
         print()
         print(exc_name, file_name, exc_tb.tb_lineno)
         print('Error: {}'.format(e))
-
+    '''
 if __name__ == '__main__':
     main(parse_args())

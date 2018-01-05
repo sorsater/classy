@@ -55,7 +55,8 @@ def run_tests(result_dict, tests, t_0, args):
         print('####    {}    ####'.format(text_to_show))
         print('########{}########'.format('#' * len(text_to_show)))
         print(test_base + test)
-        f_accuracy, elapsed = main(parse_args(test_base + test), args.output)
+        f_accuracy, stats, elapsed = main(parse_args(test_base + test), args.output)
+
         result.append([f_accuracy, elapsed, test])
 
         key = '|'.join(test_base + test)
