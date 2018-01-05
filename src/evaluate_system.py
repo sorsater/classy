@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
         print('============================================')
 
-        print('Total time: {} seconds'.format(datetime.timedelta(seconds=int(time.time()-t_0))))
+        print('Total time: "{}"'.format(datetime.timedelta(seconds=int(time.time()-t_0))))
 
     except KeyboardInterrupt:
         print('KEYBOARD INTERRUPT')
