@@ -39,9 +39,8 @@ def parse_args(arguments=[]):
     parser.add_argument('-g', '--genres', nargs='*', default=['all'], help='Genres to be parsed',
         choices=['all', 'baseline', 'pop', 'rap', 'rock', 'country', 'electronic', 'rob'])
     parser.add_argument('-i', '--iterations', type=int, default=1, help='Number of iterations to run model')
-    parser.add_argument('-u', '--uni_thresh', type=int, default=10, help='Number of occurences for a unigram to be in model')
-    parser.add_argument('-b', '--bi_thresh', type=int, default=10, help='Number of occurences for a bigram to be in model')
-    parser.add_argument('-m', '--max_feats', type=int, default=3000, help='Maximum number of unigram features to be considered in model. Default is all.')
+    parser.add_argument('-u', '--uni_thresh', type=int, default=2500, help='Number of unigram features to be in model')
+    parser.add_argument('-b', '--bi_thresh', type=int, default=1000, help='Number of bigram features to be in model')
 
     parser.add_argument('-s', '--split', type=int, default=70, help='In percent, how much is training data')
     parser.add_argument('-f', '--features', type=str, nargs='*', default=[], help='Features to be used, default none.',
@@ -49,18 +48,23 @@ def parse_args(arguments=[]):
 
     parser.add_argument('--count', type=int, default=-1, help='Limit the number of songs in each genre to this number. To test system on smaller dataset.')
 
-    parser.add_argument('--output', action='store_false', help='Do not use multiline print')
+    parser.add_argument('--output', action='store_false', help='If provided, do not use multiline print')
+    parser.add_argument('--stats', action='store_true', help='Show stats about precision, recall, f_measure')
     parser.add_argument('--folder_name', type=str, default='lyrics', help='Name of folder to look for songs')
     parser.add_argument('--show', type=int, default=-1, help='If provided, number of informative features to show')
-
-#    parser.add_argument('--tuning', type=int, default=-1, help='Used when optimizing features')
 
     # Tune number of chars/words/unique words
     parser.add_argument('--num_chars', type=int, default=-1, help='Number of chars in lyrics')
     parser.add_argument('--num_words', type=int, default=-1, help='Number of words in lyrics')
     parser.add_argument('--num_unique', type=int, default=-1, help='Number of uique words in lyrics')
 
-    return parser.parse_args(arguments) if arguments else parser.parse_args()
+    args = parser.parse_args(arguments) if arguments else parser.parse_args()
+
+    # Output is needed for the stats to work
+    if args.stats:
+        args.output = False
+
+    return args
 
 def get_lyrics_from_file(args):
     '''

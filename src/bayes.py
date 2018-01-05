@@ -33,11 +33,9 @@ class Classy(NaiveBayesClassifier):
         self.feat_tokenize = 'tokenize' in self.features
         self.feat_stem = 'stem' in self.features
 
-        # The threshold for the gram frequencies
-        self.freq_thresh_uni = args.uni_thresh
-        self.freq_thresh_bi = args.bi_thresh
-
-        self.num_features_thresh = args.max_feats
+        # The threshold for the n-grams
+        self.num_features_uni = args.uni_thresh
+        self.num_features_bi = args.bi_thresh
 
         # Percent to be train, rest is test
         self.percent = args.split / 100
@@ -50,6 +48,8 @@ class Classy(NaiveBayesClassifier):
         self.num_chars = int(args.num_chars)
         self.num_words = int(args.num_words)
         self.num_unique = int(args.num_unique)
+
+        self.show_stats = args.stats
 
         self.num_prints = 0
 
@@ -169,7 +169,6 @@ class Classy(NaiveBayesClassifier):
 
     def split_train_test(self):
         self._print('Preprocessing data')
-        self._print('Number of unigram features: {}'.format(self.num_features_thresh))
         len_train = int(self.percent * len(self.corpus))
         self.train_raw = self.corpus[:len_train]
         self.test_raw = self.corpus[len_train:]
@@ -219,25 +218,24 @@ class Classy(NaiveBayesClassifier):
 
         # self._print(len(self.common_unigrams))
 
-        # Modified version that can consider num_features_thresh number of words and can remove stopwords
+        # unique_unigrams is dict with (word: count). Is sorted by count and adds features until the number of features are fulfilled
+        # Ignores stopwords.
         self.common_unigrams = set()
         for word, value in sorted(unique_unigrams.items(), key=operator.itemgetter(1), reverse=True):
-            if len(self.common_unigrams) >= self.num_features_thresh:
+            if len(self.common_unigrams) >= self.num_features_uni:
                 break
             if (self.feat_stopwords) and (word.lower() in self.stopwords):
                 continue
-            if value >= self.freq_thresh_uni:
-                self.common_unigrams.add(word)
-        # self._print(len(self.common_unigrams))
+            self.common_unigrams.add(word)
 
+        # Same but for bigrams
         self.common_bigrams = set()
         for word, value in unique_bigrams.items():
-            if len(self.common_bigrams) >= self.num_features_thresh:
+            if len(self.common_bigrams) >= self.num_features_bi:
                 break
             if (self.feat_stopwords) and (word.lower() in self.stopwords):
                 continue
-            if value >= self.freq_thresh_bi:
-                self.common_bigrams.add(word)
+            self.common_bigrams.add(word)
 
         # Create train and test set
         self.train_names, self.train_set = self.extract_features(self.train_raw, 'train')
@@ -252,14 +250,11 @@ class Classy(NaiveBayesClassifier):
     def train(self):
         '''
         Train the model by using the built in trainer.
+
+        I have locally added a progressbar in the nltk training method.
         '''
         self._print('Training', end='\r')
         self.model = nltk.NaiveBayesClassifier.train(self.train_set)
-
-        # TODO: uncomment self._print
-        # I have locally added a progressbar in the nltk training method.
-        # You probably need to uncomment the self._print if you don't do the same
-        # self._print('Training: done')
 
     def test_old(self):
         '''
@@ -298,19 +293,21 @@ class Classy(NaiveBayesClassifier):
         self._print()
         self.accuracy = sum(result) / len(result)
 
-        self.stats = []
-
         self._print('Accuracy: {:.2f}%'.format(100*self.accuracy))
         self._print()
 
-        for genre in list(true_set.keys()):
-            _precision = precision(true_set[genre], pred_set[genre])
-            _recall = recall(true_set[genre], pred_set[genre])
-            _f_measure = f_measure(true_set[genre], pred_set[genre])
-            self.stats.append([genre, _precision, _recall, _f_measure])
+        self.stats = []
+        if self.show_stats:
+            for genre in list(true_set.keys()):
+                _precision = precision(true_set[genre], pred_set[genre])
+                _recall = recall(true_set[genre], pred_set[genre])
+                _f_measure = f_measure(true_set[genre], pred_set[genre])
+                self.stats.append([genre, _precision, _recall, _f_measure])
 
-            self._print('Genre: {}'.format(genre))
-            self._print('Precision: {:.2f}%'.format(100*_precision))
-            self._print('Recall: {:.2f}%'.format(100*_recall))
-            self._print('F-measure: {:.2f}%'.format(100*_f_measure))
-            self._print()
+                # If some of them is not set (too little data probably)
+                if not any(a is None for a in [_precision, _recall, _f_measure]):
+                    self._print(genre)
+                    self._print(' Precision: {:.2f}%'.format(100*_precision))
+                    self._print(' Recall   : {:.2f}%'.format(100*_recall))
+                    self._print(' F-measure: {:.2f}%'.format(100*_f_measure))
+                    self._print()
