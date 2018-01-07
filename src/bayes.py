@@ -27,7 +27,12 @@ class Classy(NaiveBayesClassifier):
         self.features = args.features
 
         self.feat_baseline = 'baseline' in self.features
-        self.feat_bigram = 'bigram' in self.features
+        self.feat_bi_gram = 'bigram' in self.features
+        self.feat_tri_gram = 'trigram' in self.features
+        self.feat_four_gram = 'fourgram' in self.features
+        self.feat_five_gram = 'fivegram' in self.features
+        self.feat_n_gram = any(n_gram in self.features for n_gram in ['bigram', 'trigram', 'fourgram', 'fivegram'])
+
         self.feat_meta = 'meta' in self.features
         self.feat_stopwords = 'stopwords' in self.features
         self.feat_tokenize = 'tokenize' in self.features
@@ -36,6 +41,9 @@ class Classy(NaiveBayesClassifier):
         # The threshold for the n-grams
         self.num_features_uni = args.uni_thresh
         self.num_features_bi = args.bi_thresh
+        self.num_features_tri = args.tri_thresh
+        self.num_features_four = args.tri_thresh
+        self.num_features_five = args.tri_thresh
 
         # Percent to be train, rest is test
         self.percent = args.split / 100
@@ -61,8 +69,11 @@ class Classy(NaiveBayesClassifier):
         self.num_prints += 1
 
     def features_grams(self, lyrics):
-        unigrams = []
-        bigrams = set()
+        uni_grams = []
+        bi_grams = set()
+        tri_grams = set()
+        four_grams = set()
+        five_grams = set()
         meta_data = []
         no_meta_lyrics = ""
         for line in lyrics.split('\n'):
@@ -78,21 +89,30 @@ class Classy(NaiveBayesClassifier):
                 word = word.rstrip()
                 # Ignore double space
                 if len(word) > 0:
-                    unigrams.append(word)
-                    if idx > 0:
-                        bigrams.add(words[idx - 1] + '|' + word)
+                    uni_grams.append(word)
+                    # Speed up by not checking further
+                    if not self.feat_n_gram:
+                        continue
+                    if idx >= 1:
+                        bi_grams.add('|'.join(words[idx-1:idx+1]))
+                    if idx >= 2:
+                        tri_grams.add('|'.join(words[idx-2:idx+1]))
+                    if idx >= 3:
+                        four_grams.add('|'.join(words[idx-3:idx+1]))
+                    if idx >= 4:
+                        five_grams.add('|'.join(words[idx-4:idx+1]))
 
         if self.feat_tokenize:
             words_tokenize = word_tokenize(no_meta_lyrics)
         else:
-            words_tokenize = unigrams
+            words_tokenize = uni_grams
 
         if self.feat_stem:
             words_stem = [self.stemmer.stem(word) for word in words_tokenize]
         else:
             words_stem = words_tokenize
 
-        return set(words_stem), bigrams, meta_data
+        return set(words_stem), bi_grams, tri_grams, four_grams, five_grams, meta_data
 
     def features_meta(self, meta_data):
         meta_members = {
@@ -115,17 +135,34 @@ class Classy(NaiveBayesClassifier):
         The features extracted are defined here.
         '''
 
-        unigrams, bigrams, meta_data = self.features_grams(song['lyrics'])
+        uni_grams, bi_grams, tri_grams, four_grams, five_grams, meta_data = self.features_grams(song['lyrics'])
 
         features = {}
         # Occurency of a unigram or not in a song
-        for unigram in self.common_unigrams:
-            features['uni({})'.format(unigram)] = (unigram in unigrams)
+        for uni_gram in self.common_uni_grams:
+            features['uni({})'.format(uni_gram)] = (uni_gram in uni_grams)
 
         # Occurency of a bigram or not in a song
-        if self.feat_bigram:
-            for bigram in self.common_bigrams:
-                features['bi({})'.format(bigram)] = (bigram in bigrams)
+        if self.feat_bi_gram:
+            for bi_gram in self.common_bi_grams:
+                features['bi({})'.format(bi_gram)] = (bi_gram in bi_grams)
+
+        # Occurency of a trigram or not in a song
+        if self.feat_tri_gram:
+            for tri_gram in self.common_tri_grams:
+                features['tri({})'.format(tri_gram)] = (tri_gram in tri_grams)
+
+        # Occurency of a four-gram or not in a song
+        if self.feat_four_gram:
+            #print('JJJJJ?')
+            #input()
+            for four_gram in self.common_four_grams:
+                features['four({})'.format(four_gram)] = (four_gram in four_grams)
+
+        # Occurency of a five-gram or not in a song
+        if self.feat_five_gram:
+            for five_gram in self.common_five_grams:
+                features['five({})'.format(five_gram)] = (five_gram in five_grams)
 
         # Types of metadata in lyrics. Count all of them to keep tack of how song is structured.
         if self.feat_meta:
@@ -170,8 +207,11 @@ class Classy(NaiveBayesClassifier):
     def extract_data_training(self):
         # All words with their frequency in the train set.
         # Avoid to look at test data (no cheating)
-        unigrams = []
-        bigrams = []
+        uni_grams = []
+        bi_grams = []
+        tri_grams = []
+        four_grams = []
+        five_grams = []
         no_meta_lyrics = ''
         for idx, song in enumerate(self.train_raw):
             for line in song['lyrics'].split('\n'):
@@ -189,11 +229,20 @@ class Classy(NaiveBayesClassifier):
                     word = word.rstrip()
                     # Ignore double space
                     if len(word) >= 1:
-                        unigrams.append(word)
-                        if idx > 0:
-                            bigrams.append(words[idx - 1] + '|' + word)
+                        uni_grams.append(word)
+                        # Speed up by not checking further
+                        if not self.feat_n_gram:
+                            continue
+                        if idx >= 1:
+                            bi_grams.append('|'.join(words[idx-1:idx+1]))
+                        if idx >= 2:
+                            tri_grams.append('|'.join(words[idx-2:idx+1]))
+                        if idx >= 3:
+                            four_grams.append('|'.join(words[idx-3:idx+1]))
+                        if idx >= 4:
+                            five_grams.append('|'.join(words[idx-4:idx+1]))
 
-        return unigrams, bigrams, no_meta_lyrics
+        return uni_grams, bi_grams, tri_grams, four_grams, five_grams, no_meta_lyrics
 
     def split_train_test(self):
         self._print('Preprocessing data')
@@ -201,44 +250,71 @@ class Classy(NaiveBayesClassifier):
         self.train_raw = self.corpus[:len_train]
         self.test_raw = self.corpus[len_train:]
 
-        unigrams, bigrams, no_meta_lyrics = self.extract_data_training()
+        uni_grams, bi_grams, tri_grams, four_grams, five_grams, no_meta_lyrics = self.extract_data_training()
 
         if self.feat_tokenize:
             words_tokenize = word_tokenize(no_meta_lyrics)
         else:
-            words_tokenize = unigrams
+            words_tokenize = uni_grams
 
         if self.feat_stem:
             words_stem = [self.stemmer.stem(word) for word in words_tokenize]
         else:
             words_stem = words_tokenize
 
-        unique_unigrams = Counter(words_stem)
-
-        unique_bigrams = Counter(bigrams)
-
-        # Words with a higher frequency than 'freq_thresh' is stored in 'common_unigrams'
-        # self.common_unigrams = set([word for word, value in unique_unigrams.items() if value >= self.freq_thresh_uni])
-        # self.common_bigrams = set([word for word, value in unique_bigrams.items() if value >= self.freq_thresh_bi])
-
-        # self._print(len(self.common_unigrams))
+        unique_uni_grams = Counter(words_stem)
+        unique_bi_grams = Counter(bi_grams)
+        unique_tri_grams = Counter(tri_grams)
+        unique_four_grams = Counter(four_grams)
+        unique_five_grams = Counter(five_grams)
 
         # unique_unigrams is dict with (word: count). Is sorted by count and adds features until the number of features are fulfilled
         # Ignores stopwords.
-        self.common_unigrams = set()
-        for word, value in sorted(unique_unigrams.items(), key=operator.itemgetter(1), reverse=True):
-            if len(self.common_unigrams) >= self.num_features_uni:
+        self.common_uni_grams = set()
+        for word, value in sorted(unique_uni_grams.items(), key=operator.itemgetter(1), reverse=True):
+            if value == 1:
+                continue
+            if len(self.common_uni_grams) >= self.num_features_uni:
                 break
             if (self.feat_stopwords) and (word.lower() in self.stopwords):
                 continue
-            self.common_unigrams.add(word)
+            self.common_uni_grams.add(word)
 
-        # Same but for bigrams
-        self.common_bigrams = set()
-        for word, value in unique_bigrams.items():
-            if len(self.common_bigrams) >= self.num_features_bi:
+        # Bigrams
+        self.common_bi_grams = set()
+        for word, value in sorted(unique_bi_grams.items(), key=operator.itemgetter(1), reverse=True):
+            if value == 1:
+                continue
+            if len(self.common_bi_grams) >= self.num_features_bi:
                 break
-            self.common_bigrams.add(word)
+            self.common_bi_grams.add(word)
+
+        # Trigrams
+        self.common_tri_grams = set()
+        for word, value in sorted(unique_tri_grams.items(), key=operator.itemgetter(1), reverse=True):
+            if value == 1:
+                continue
+            if len(self.common_tri_grams) >= self.num_features_tri:
+                break
+            self.common_tri_grams.add(word)
+
+        # Four-grams
+        self.common_four_grams = set()
+        for word, value in sorted(unique_four_grams.items(), key=operator.itemgetter(1), reverse=True):
+            if value == 1:
+                continue
+            if len(self.common_four_grams) >= self.num_features_four:
+                break
+            self.common_four_grams.add(word)
+
+        # Five-grams
+        self.common_five_grams = set()
+        for word, value in sorted(unique_five_grams.items(), key=operator.itemgetter(1), reverse=True):
+            if value == 1:
+                continue
+            if len(self.common_five_grams) >= self.num_features_five:
+                break
+            self.common_five_grams.add(word)
 
         # Create train and test set
         self.train_names, self.train_set = self.extract_features(self.train_raw, 'train')

@@ -20,6 +20,9 @@ all_features = OrderedDict([
     ('all', 'Add all features to the baseline'),
     ('baseline', 'The baseline system'),
     ('bigram', 'Bigrams in the songs'),
+    ('trigram', 'Trigrams in the songs'),
+    ('fourgram', 'Four-grams in the songs'),
+    ('fivegram', 'Five-grams in the songs'),
     ('meta', 'Song structure, use data about "Verse", "Chorus" etc'),
     ('stopwords', 'Remove stopwords'),
     ('tokenize', 'Tokenize lyrics'),
@@ -39,8 +42,13 @@ def parse_args(arguments=[]):
     parser.add_argument('-g', '--genres', nargs='*', default=['all'], help='Genres to be parsed',
         choices=['all', 'baseline', 'pop', 'rap', 'rock', 'country', 'electronic', 'rob'])
     parser.add_argument('-i', '--iterations', type=int, default=1, help='Number of iterations to run model')
+
+    # N-grams
     parser.add_argument('-u', '--uni_thresh', type=int, default=2500, help='Number of unigram features to be in model')
-    parser.add_argument('-b', '--bi_thresh', type=int, default=1000, help='Number of bigram features to be in model')
+    parser.add_argument('-b', '--bi_thresh', type=int, default=2000, help='Number of bigram features to be in model')
+    parser.add_argument('-t', '--tri_thresh', type=int, default=3000, help='Number of trigram features to be in model')
+    parser.add_argument('--four_thresh', type=int, default=1000, help='Number of four-gram features to be in model')
+    parser.add_argument('--five_thresh', type=int, default=1000, help='Number of five-gram features to be in model')
 
     parser.add_argument('-s', '--split', type=int, default=70, help='In percent, how much is training data')
     parser.add_argument('-f', '--features', type=str, nargs='*', default=[], help='Features to be used, default none.',
@@ -160,7 +168,7 @@ def main(args, output=False):
         if failed:
             _print('Failed: {}'.format(len(failed)))
             # Toggle to see songs that failed
-            if False:
+            if True:
                 for artist, song in failed:
                     _print(' "{}": "{}"'.format(artist, song))
         _print()
@@ -189,6 +197,12 @@ def main(args, output=False):
         _print('Classifier with unigram value: {}'.format(args.uni_thresh))
         if 'bigram' in args.features:
             _print('Classifier with bigram value: {}'.format(args.bi_thresh))
+        if 'trigram' in args.features:
+            _print('Classifier with trigram value: {}'.format(args.tri_thresh))
+        if 'fourgram' in args.features:
+            _print('Classifier with four-gram value: {}'.format(args.four_thresh))
+        if 'fivegram' in args.features:
+            _print('Classifier with five-gram value: {}'.format(args.five_thresh))
         _print('Number of iterations: {}'.format(args.iterations))
 
         # Run model 'args.iterations' times
