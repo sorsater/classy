@@ -72,7 +72,6 @@ class Classy(NaiveBayesClassifier):
             if line[0] + line[-1] == '[]':
                 meta_data.append(line[1:-1].lower())
                 continue
-
             no_meta_lyrics += line + ' '
             words = line.split(' ')
             for idx, word in enumerate(words):
@@ -100,6 +99,7 @@ class Classy(NaiveBayesClassifier):
             'verse': 0, 'chorus': 0, 'intro': 0, 'outro': 0,
             'break':0, 'bridge': 0, 'skit': 0, 'hook': 0,
             'drop': 0, 'interlude': 0, 'breakdown': 0,
+            'pre-chorus': 0,
             }
 
         for item in meta_data:
@@ -167,12 +167,7 @@ class Classy(NaiveBayesClassifier):
         self._print()
         return names, features
 
-    def split_train_test(self):
-        self._print('Preprocessing data')
-        len_train = int(self.percent * len(self.corpus))
-        self.train_raw = self.corpus[:len_train]
-        self.test_raw = self.corpus[len_train:]
-
+    def extract_data_training(self):
         # All words with their frequency in the train set.
         # Avoid to look at test data (no cheating)
         unigrams = []
@@ -197,6 +192,16 @@ class Classy(NaiveBayesClassifier):
                         unigrams.append(word)
                         if idx > 0:
                             bigrams.append(words[idx - 1] + '|' + word)
+
+        return unigrams, bigrams, no_meta_lyrics
+
+    def split_train_test(self):
+        self._print('Preprocessing data')
+        len_train = int(self.percent * len(self.corpus))
+        self.train_raw = self.corpus[:len_train]
+        self.test_raw = self.corpus[len_train:]
+
+        unigrams, bigrams, no_meta_lyrics = self.extract_data_training()
 
         if self.feat_tokenize:
             words_tokenize = word_tokenize(no_meta_lyrics)
@@ -233,8 +238,6 @@ class Classy(NaiveBayesClassifier):
         for word, value in unique_bigrams.items():
             if len(self.common_bigrams) >= self.num_features_bi:
                 break
-            if (self.feat_stopwords) and (word.lower() in self.stopwords):
-                continue
             self.common_bigrams.add(word)
 
         # Create train and test set

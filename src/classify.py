@@ -146,7 +146,7 @@ def main(args, output=False):
 
     try:
         # Reset the seed after each test
-        random.seed(1234)
+        random.seed(12345)
 
         t_start = time()
         _print()
